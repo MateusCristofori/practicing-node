@@ -1,25 +1,23 @@
-import express, { Router } from 'express'
-import router from './routes/route'
-import mongoose from 'mongoose'
-import dotenv from 'dotenv'
-import { connect } from './connection/connectionDB'
+import dotenv from 'dotenv';
+import express, { Router } from 'express';
+import { connect } from './connection/connectionDB';
+import router from './routes/route';
 
 
 
-const app = express()
+const app = express();
 
-app.use(express.json())
+app.use(express.json());
 
-dotenv.config()
+dotenv.config();
 
 // rotas
-const usersRoutes: Router = router
-
-app.use("/users", usersRoutes)
+const usersRoutes: Router = router;
+app.use("/users", usersRoutes);
 
 // conectar com banco de dados
-connect()
+connect();
   
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000")
-})
+});

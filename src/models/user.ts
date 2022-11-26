@@ -1,8 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 
+const userSchema = new Schema({
+  name: String,
+  email: String,
+  password: String,
+});
 
-class User {
-  constructor(private name: String, private email: String, private password: String) {}
-}
-
-export default mongoose.model('users', new Schema(User));
+export default mongoose.model('users', userSchema);
