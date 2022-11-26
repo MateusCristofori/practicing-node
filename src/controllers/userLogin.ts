@@ -33,3 +33,7 @@ export const userLogin = async (request: Request, response: Response) => {
     token
   });
 }
+
+export const userLogOut = (request: Request, response: Response) => {
+  response.end();
+}
