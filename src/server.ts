@@ -3,8 +3,6 @@ import express, { Router } from 'express';
 import { connect } from './connection/connectionDB';
 import router from './routes/route';
 
-
-
 const app = express();
 
 app.use(express.json());

@@ -2,11 +2,12 @@
 import  User from "../models/User"
 import { Request, response, Response } from "express";
 import bcrypt from 'bcrypt';
+import { ObjectId } from "mongoose";
 
 // functions
 export const getAllUsersHandler = async (request: Request, response: Response) => {
 
-  const users = await User.find({});
+  const users = await User.find({}, '-password');
 
   response.status(200).json(users);
 }
@@ -16,7 +17,7 @@ export const registerNewUserHandler = async (request: Request, response: Respons
   const { name, email, password } = request.body;
 
   const salt = await bcrypt.genSalt(12);
-  const passwordHash = bcrypt.hash(salt, password);
+  const passwordHash = await bcrypt.hash(password, salt); // Vamos passar primeiramente a senha e depois o 'salt'.
 
 
   const user = new User({
@@ -32,10 +33,10 @@ export const registerNewUserHandler = async (request: Request, response: Respons
 export const updateUserHandler = async (request: Request, response: Response) => {
 
   const id = request.params.id;
-  const { name, email, password} = request.body;
+  const { name, email, password } = request.body;
 
   const salt = await bcrypt.genSalt(12);
-  const newPasswordHash = bcrypt.hash(salt, password);
+  const newPasswordHash = await bcrypt.hash(password, salt);
 
   const user = {
     name,
@@ -43,7 +44,7 @@ export const updateUserHandler = async (request: Request, response: Response) =>
     password: newPasswordHash
   };
 
-  const updatedUser = User.findOne({ _id: id }, user);
+  const updatedUser = await User.findOneAndUpdate({_id: id}, user);
 
   response.status(200).json(user);
 }
@@ -53,7 +54,7 @@ export const deleteUserByIdHandler = async (request: Request, Response: Response
   try {
     const id = request.params.id;
     
-    const deletedUser = await User.deleteOne({_id: id});
+    const deletedUser = await User.findByIdAndDelete({_id: id});
 
     response.status(200).json({msg: "Usuário deletado com sucesso."});
 

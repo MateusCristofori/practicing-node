@@ -1,5 +1,5 @@
-import { NextFunction, Request, Response } from "express"
-import jwt, { JwtPayload } from 'jsonwebtoken'
+import { NextFunction, Response } from "express";
+import jwt from 'jsonwebtoken';
 import { IRequestWithToken } from "../interfaces/IRequestWithToken";
 import { IJwtPayloadUserInfo } from "./IJwtPayloadUserInfo";
 

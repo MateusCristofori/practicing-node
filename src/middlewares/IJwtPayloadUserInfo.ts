@@ -3,5 +3,9 @@ import User from "../models/User";
 
 
 export interface IJwtPayloadUserInfo extends JwtPayload{
-  user: typeof User;
+  user: {
+    id: string,
+    name: string,
+    email: string
+  }
 }

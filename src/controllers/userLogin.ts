@@ -1,7 +1,7 @@
-import { Request, Response } from "express"
-import jwt from 'jsonwebtoken'
-import Usermodel from "../models/User"
-
+import { Request, Response } from "express";
+import jwt from 'jsonwebtoken';
+import User from "../models/User";
+import bcrypt from 'bcrypt';
 
 export const userLogin = async (request: Request, response: Response) => {
 
@@ -12,28 +12,41 @@ export const userLogin = async (request: Request, response: Response) => {
     return;
   }
   
-  const user = await Usermodel.findOne({email});
+  const user = await User.findOne({email});
   
-  // const passwordHash = bcrypt.hash(password);
-
+  
   if(!user) {
     response.status(404).json({msg: "Usuário não existe!"});
     return;
   }
 
-  if(password !== user.password) {
+  const passwordHash: Promise<boolean> = bcrypt.compare(password, user.get('password'));
+  
+  if(!passwordHash) {
     response.status(404).json({msg: "Senha incorreta!"})
     return;
   }
 
-  const token = jwt.sign(user, process.env.SECRET as string);
+  const token = jwt.sign({
+    user: {
+      name: user.name,
+      email: user.email
+    }
+  }, process.env.SECRET as string);
 
   response.status(200).json({
-    user,
+    auth: true,
+    user: {
+      id: user._id,
+      name: user.name,
+      email: user.email
+    },
     token
   });
 }
 
+// const blackListToken: string[] = []
 export const userLogOut = (request: Request, response: Response) => {
+  // const invalidToken = blackListToken.push(request.headers['x-access-token'] as string)
   response.end();
 }
