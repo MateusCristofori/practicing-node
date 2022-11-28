@@ -1,7 +1,8 @@
 import dotenv from 'dotenv';
 import express, { Router } from 'express';
 import { connect } from './connection/connectionDB';
-import router from './routes/route';
+import privateRouter from './routes/privateRoutes';
+import publicRouter from './routes/publicRoutes';
 
 const app = express();
 
@@ -10,8 +11,10 @@ app.use(express.json());
 dotenv.config();
 
 // rotas
-const usersRoutes: Router = router;
-app.use("/users", usersRoutes);
+const privateRouters: Router = privateRouter;
+const publicRouters: Router = publicRouter;
+app.use("/blog", publicRouter);
+app.use("/users", privateRouter)
 
 // conectar com banco de dados
 connect();

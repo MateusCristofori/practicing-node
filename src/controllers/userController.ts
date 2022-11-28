@@ -1,8 +1,7 @@
 // import's
-import  User from "../models/User"
-import { Request, response, Response } from "express";
 import bcrypt from 'bcrypt';
-import { ObjectId } from "mongoose";
+import { Request, response, Response } from "express";
+import User from "../models/User";
 
 // functions
 export const getAllUsersHandler = async (request: Request, response: Response) => {

@@ -1,7 +1,8 @@
 import { Request, Response } from "express";
-import jwt from 'jsonwebtoken';
+import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from "../models/User";
 import bcrypt from 'bcrypt';
+import { IRequestWithToken } from "../interfaces/IRequestWithToken";
 
 export const userLogin = async (request: Request, response: Response) => {
 
@@ -45,8 +46,13 @@ export const userLogin = async (request: Request, response: Response) => {
   });
 }
 
-// const blackListToken: string[] = []
-export const userLogOut = (request: Request, response: Response) => {
-  // const invalidToken = blackListToken.push(request.headers['x-access-token'] as string)
-  response.end();
+const blackListToken: string[] = []
+
+export const userLogOutHandler = (request: IRequestWithToken, response: Response) => {
+  const { token } = request.body
+
+  const invalidToken = blackListToken.push(token)
+  console.log(blackListToken);
+  
+  response.end().json({msg: "Deslogado."});
 }

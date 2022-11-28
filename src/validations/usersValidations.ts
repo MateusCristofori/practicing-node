@@ -25,6 +25,4 @@ export const loginCredentialValidation = (request: Request, response: Response, 
     response.status(422).json({msg: "Os campos de 'email' e 'senha' devem ser preenchidos para o processo de login!"});
     return;
   }
-
-  
 }
