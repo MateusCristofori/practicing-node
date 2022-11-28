@@ -4,7 +4,7 @@ export interface IBlackListToken extends Document{
   token: string 
 }
 
-const invalidTokenSchema = new Schema({
+const invalidTokenSchema = new Schema<IBlackListToken>({
   token: {
     type: String,
     required: true
