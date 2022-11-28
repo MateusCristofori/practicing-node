@@ -9,6 +9,6 @@ publicRouter.get('/', getAllUsersHandler);
 publicRouter.post('/register', registerNewUserHandler);
 publicRouter.post('/login', userLogin);
 publicRouter.put('/update/:id', updateUserHandler);
-publicRouter.delete('/user/delete/:id', deleteUserByIdHandler);
+publicRouter.delete('/delete/:id', deleteUserByIdHandler);
 
 export default publicRouter;
