@@ -16,9 +16,9 @@ const publicRouters: Router = publicRouter;
 app.use("/blog", publicRouter);
 app.use("/users", privateRouter)
 
-// conectar com banco de dados
+// conexão com banco de dados principal
 connect();
-  
+
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000")
 });

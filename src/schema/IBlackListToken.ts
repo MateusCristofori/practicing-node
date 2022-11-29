@@ -1,7 +1,10 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 export interface IBlackListToken extends Document{
-  token: string 
+  token: {
+    type: string,
+    required: boolean
+  }
 }
 
 const invalidTokenSchema = new Schema<IBlackListToken>({

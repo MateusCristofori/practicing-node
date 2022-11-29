@@ -3,6 +3,7 @@ import jwt, { JwtPayload } from 'jsonwebtoken';
 import User from "../models/User";
 import bcrypt from 'bcrypt';
 import { IRequestWithToken } from "../interfaces/IRequestWithToken";
+import IBlackListToken from "../schema/IBlackListToken";
 
 export const userLogin = async (request: Request, response: Response) => {
 
@@ -15,15 +16,14 @@ export const userLogin = async (request: Request, response: Response) => {
   
   const user = await User.findOne({email});
   
-  
   if(!user) {
     response.status(404).json({msg: "Usuário não existe!"});
     return;
   }
 
-  const passwordHash: Promise<boolean> = bcrypt.compare(password, user.get('password'));
+  const passwordMatch: Promise<boolean> = bcrypt.compare(password, user.get('password'));
   
-  if(!passwordHash) {
+  if(!passwordMatch) {
     response.status(404).json({msg: "Senha incorreta!"})
     return;
   }
@@ -33,7 +33,10 @@ export const userLogin = async (request: Request, response: Response) => {
       name: user.name,
       email: user.email
     }
-  }, process.env.SECRET as string);
+  }, process.env.SECRET as string, {
+    subject: user._id,
+    expiresIn: "20s"
+  });
 
   response.status(200).json({
     auth: true,
@@ -46,13 +49,15 @@ export const userLogin = async (request: Request, response: Response) => {
   });
 }
 
-const blackListToken: string[] = []
-
 export const userLogOutHandler = (request: IRequestWithToken, response: Response) => {
   const { token } = request.body
 
-  const invalidToken = blackListToken.push(token)
-  console.log(blackListToken);
-  
-  response.end().json({msg: "Deslogado."});
+  try {
+    const addTokenInBlackList = IBlackListToken.bulkSave([token])
+    
+    console.log("Token salvo na black list", token);
+  } catch (error) {
+    console.log("Token não salvo na black list");
+  }
+  response.status(200).json({msg: "Deslogado."}).end();
 }
