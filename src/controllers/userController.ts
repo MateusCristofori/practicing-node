@@ -5,7 +5,6 @@ import User from "../models/User";
 
 // functions
 export const getAllUsersHandler = async (request: Request, response: Response) => {
-
   const users = await User.find({}, '-password');
 
   response.status(200).json(users);

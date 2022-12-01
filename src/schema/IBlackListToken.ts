@@ -1,17 +1,18 @@
 import mongoose, { Document, Schema } from "mongoose";
 
-export interface IBlackListToken extends Document{
+export interface RefreshToken extends Document{
   token: {
     type: string,
     required: boolean
   }
 }
 
-const invalidTokenSchema = new Schema<IBlackListToken>({
+const refreshTokenSchema = new Schema<RefreshToken>({
   token: {
     type: String,
     required: true
   }
 });
 
-export default mongoose.model('blackLisToken', invalidTokenSchema);
+
+export default mongoose.model('black list tokens', refreshTokenSchema);
