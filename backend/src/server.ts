@@ -22,9 +22,3 @@ connect();
 app.listen(3000, () => {
   console.log("Servidor rodando na porta 3000")
 });
-
-// conexão com o banco redis
-const redis = require('redis');
-
-export const client = redis.createClient();
-client.connect();

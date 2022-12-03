@@ -10,6 +10,7 @@ export const tokenValidation = async (request: IRequestWithToken, response: Resp
     const token = authToken && authToken.split(" ")[1];
     
     const secret = process.env.SECRET;
+    const refreshToken = process.env.REFRESH_TOKEN;
     
     const checkToken = await IBlackListToken.findOne({ token })
 
@@ -23,10 +24,12 @@ export const tokenValidation = async (request: IRequestWithToken, response: Resp
     }
 
     request.token = (jwt.verify(token, secret)) as IJwtPayloadUserInfo;
+    request.token = (jwt.verify(token, refreshToken as string)) as IJwtPayloadUserInfo;
     next();
 
   } catch (error) {
     response.status(400).json({msg: "Token inválido!"});
+    console.log(error);
     return;
   }
 }

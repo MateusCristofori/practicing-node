@@ -35,6 +35,16 @@ export const userLogin = async (request: Request, response: Response) => {
       email: user.email
     }
   }, process.env.SECRET as string, {
+    expiresIn: "60s"
+  });
+
+  // refresh token
+  const refreshToken = jwt.sign({
+    user: {
+      name: user.name,
+      email: user.email
+    }
+  }, process.env.REFRESH_TOKEN as string, {
     expiresIn: "1d"
   });
   
@@ -52,22 +62,20 @@ export const userLogin = async (request: Request, response: Response) => {
       email: user.email
     },
     token,
+    refreshToken
   });
 }
 
 export const userLogOutHandler = (request: IRequestWithToken, response: Response) => {
 
-  const invalidToken = (request.headers['x-access-token'] || request.headers['authorization']) as string
-  const token = invalidToken && invalidToken.split(" ")[1]
+  const invalidToken = (request.headers['x-access-token'] || request.headers['authorization']) as string;
+  const token = invalidToken && invalidToken.split(" ")[1];
 
   const insertInvalidToken = new IBlackListToken({
     token: token
-  })
+  });
 
-  const blackListToken = insertInvalidToken.save()
-
-  console.log(insertInvalidToken);
-  
+  const blackListToken = insertInvalidToken.save();
 
   response.status(200).json({msg: "Deslogado. Faça o processo de login novamente!"});
 }
