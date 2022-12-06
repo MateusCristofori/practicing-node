@@ -1,14 +1,14 @@
 // import's
 import { Router } from "express";
-import { deleteUserByIdHandler, getAllUsersHandler, registerNewUserHandler, updateUserHandler } from "../controllers/userController";
-import { userLogin } from "../controllers/userLogin";
+import { UserController } from "../controllers/userController";
+import { UserActions } from "../controllers/userLogin";
 
 const publicRouter = Router();
 // Rotas
-publicRouter.get('/', getAllUsersHandler);
-publicRouter.post('/register', registerNewUserHandler);
-publicRouter.post('/login', userLogin);
-publicRouter.put('/update/:id', updateUserHandler);
-publicRouter.delete('/delete/:id', deleteUserByIdHandler);
+publicRouter.get('/', UserController.getAllUsersHandler);
+publicRouter.post('/register', UserController.registerNewUserHandler);
+publicRouter.post('/login', UserActions.userLogin);
+publicRouter.put('/update/:id', UserController.updateUserHandler);
+publicRouter.delete('/delete/:id', UserController.deleteUserByIdHandler);
 
 export default publicRouter;

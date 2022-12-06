@@ -19,6 +19,6 @@ app.use("/users", privateRouter)
 // conexão com banco de dados principal
 connect();
 
-app.listen(3000, () => {
-  console.log("Servidor rodando na porta 3000")
+app.listen(8000, () => {
+  console.log("Servidor rodando na porta 8000")
 });
