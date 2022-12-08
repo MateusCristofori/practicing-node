@@ -1,6 +1,7 @@
 // import's
 import bcrypt from 'bcrypt';
 import { Request, response, Response } from "express";
+import { ApiError } from '../helpers/api_error';
 import User from "../models/User";
 
 export class UserController {
@@ -46,21 +47,23 @@ export class UserController {
     const updatedUser = await User.findOneAndUpdate({_id: id}, user);
   
     response.status(200).json(user);
+
+    if(!updatedUser) {
+      throw new ApiError("Usuário não encontrado", 404);
+    }
   }
   
   static deleteUserByIdHandler = async (request: Request, Response: Response) => {
+  
+    const id = request.params.id;
     
-    try {
-      const id = request.params.id;
-      
-      const deletedUser = await User.findByIdAndDelete({_id: id});
-  
-      response.status(200).json({msg: "Usuário deletado com sucesso."});
-  
-    } catch (error) {
+    const deletedUser = await User.findByIdAndDelete({_id: id});
+
+    response.status(200).json({msg: "Usuário deletado com sucesso."});
+
+    if(!deletedUser) {
       response.status(404).json({msg: "Usuário não encontrado! "});
       return;
     }
   }
-
 }
