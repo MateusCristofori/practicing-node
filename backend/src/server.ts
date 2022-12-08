@@ -1,17 +1,26 @@
+import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Router } from 'express';
+import fileUpload from 'express-fileupload';
+import path from 'path';
 import { connect } from './connection/connectionDB';
-import { NotFoundError } from './helpers/api_error';
 import { middlewareError } from './middlewares/middlewareError';
 import privateRouter from './routes/privateRoutes';
 import publicRouter from './routes/publicRoutes';
 
 const app = express();
 
+//json
 app.use(express.json());
+//fileUpload
+app.use(fileUpload({
+  useTempFiles: true,
+  tempFileDir: path.join(__dirname, 'temp')
+}))
+//cors
+app.use(cors());
 
 dotenv.config();
-
 
 // rotas
 const privateRouters: Router = privateRouter;
