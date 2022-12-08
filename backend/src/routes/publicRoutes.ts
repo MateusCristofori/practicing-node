@@ -8,7 +8,5 @@ const publicRouter = Router();
 publicRouter.get('/', UserController.getAllUsersHandler);
 publicRouter.post('/register', UserController.registerNewUserHandler);
 publicRouter.post('/login', UserActions.userLogin);
-publicRouter.put('/update/:id', UserController.updateUserHandler);
-publicRouter.delete('/delete/:id', UserController.deleteUserByIdHandler);
 
 export default publicRouter;

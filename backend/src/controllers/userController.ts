@@ -1,7 +1,7 @@
 // import's
 import bcrypt from 'bcrypt';
 import { Request, response, Response } from "express";
-import { ApiError } from '../helpers/api_error';
+import { NotFoundError } from '../helpers/api_error';
 import User from "../models/User";
 
 export class UserController {
@@ -49,7 +49,7 @@ export class UserController {
     response.status(200).json(user);
 
     if(!updatedUser) {
-      throw new ApiError("Usuário não encontrado", 404);
+      throw new NotFoundError("Usuário não encontrado!");
     }
   }
   
@@ -62,8 +62,7 @@ export class UserController {
     response.status(200).json({msg: "Usuário deletado com sucesso."});
 
     if(!deletedUser) {
-      response.status(404).json({msg: "Usuário não encontrado! "});
-      return;
+      throw new NotFoundError("Usuário não encontrado!");
     }
   }
 }

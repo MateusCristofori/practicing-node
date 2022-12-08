@@ -5,8 +5,7 @@ export const middlewareError = (error: Error & ApiError, request: Request, respo
   const statusCode: number = error.statusCode ?? 500;
   const errorMessage = error.statusCode ? error.message : "Internal server error.";
 
+  console.log(error);
 
-
-  response.status(statusCode).json({msg: errorMessage});
-  next();
+  return response.status(statusCode).json(errorMessage);
 }
