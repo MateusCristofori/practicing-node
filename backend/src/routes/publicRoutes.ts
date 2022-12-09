@@ -6,6 +6,7 @@ import { UserActions } from "../controllers/userLogin";
 const publicRouter = Router();
 // Rotas
 publicRouter.get('/', UserController.getAllUsersHandler);
+publicRouter.get('/:id?', UserController.getUserById);
 publicRouter.post('/register', UserController.registerNewUserHandler);
 publicRouter.post('/login', UserActions.userLogin);
 
