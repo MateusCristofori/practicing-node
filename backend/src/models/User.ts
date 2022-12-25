@@ -1,4 +1,14 @@
 import mongoose, { Document, Schema } from "mongoose";
+import { Replace } from "../helpers/replace/replace";
+
+export enum Permissions {
+  
+  ADMINISTRATOR,
+
+  MANAGER,
+
+  READER,
+}
 
 export interface User extends Document {
   name: {
@@ -12,7 +22,7 @@ export interface User extends Document {
   password: {
     type: string,
     required: boolean
-  }
+  },
 }
 
 const userSchema = new Schema<User>({
@@ -27,7 +37,7 @@ const userSchema = new Schema<User>({
   password: {
     type: String,
     required: true
-  }
+  },
 });
 
 export default mongoose.model('users', userSchema);

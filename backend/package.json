@@ -21,6 +21,7 @@
     "typescript": "^4.9.3"
   },
   "dependencies": {
+    "@types/mongoose": "^5.11.97",
     "@types/redis": "^4.0.11",
     "bcrypt": "^5.1.0",
     "cors": "^2.8.5",
@@ -30,6 +31,8 @@
     "ioredis": "^5.2.4",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^6.7.3",
-    "redis": "^4.5.1"
+    "redis": "^4.5.1",
+    "reflect-metadata": "^0.1.13",
+    "tsyringe": "^4.7.0"
   }
 }

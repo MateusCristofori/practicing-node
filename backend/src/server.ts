@@ -1,3 +1,5 @@
+import 'reflect-metadata';
+import { container } from 'tsyringe'
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Router } from 'express';
