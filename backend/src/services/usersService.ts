@@ -25,10 +25,7 @@ export class UserService {
   }
 
   static registerNewUser = async(request: Request, response: Response) => {
-    const { name, email, password, permissions }: IUserRequestBody = request.body;
-
-    console.log(permissions);
-    
+    const { name, email, password }: IUserRequestBody = request.body;
 
     if(!name || !email || !password) {
       throw new ApiError("Os campos de 'nome', 'email', 'senha' e 'permissão' precisam ser preenchidos.", 500)
