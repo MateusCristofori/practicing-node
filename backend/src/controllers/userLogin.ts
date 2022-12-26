@@ -1,10 +1,10 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
 import jwt from 'jsonwebtoken';
-import { ApiError, NotFoundError, UnauthorizedError } from '../helpers/api_error';
+import { ApiError, NotFoundError, UnauthorizedError } from '../helpers/Errors/api_error';
 import { IRequestWithToken } from "../interfaces/IRequestWithToken";
 import User from "../models/User";
-import IBlackListToken from '../schema/IBlackListToken';
+import IBlackListToken from '../models/IBlackListToken';
 
 export class UserActions {
 

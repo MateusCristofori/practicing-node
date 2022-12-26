@@ -1,8 +1,8 @@
 import { NextFunction, Response } from "express";
 import jwt from 'jsonwebtoken';
-import { UnauthorizedError } from "../helpers/api_error";
+import { UnauthorizedError } from "../helpers/Errors/api_error";
 import { IRequestWithToken } from "../interfaces/IRequestWithToken";
-import IBlackListToken from "../schema/IBlackListToken";
+import IBlackListToken from "../models/IBlackListToken";
 import { IJwtPayloadUserInfo } from "./IJwtPayloadUserInfo";
 
 export const tokenValidation = async (request: IRequestWithToken, response: Response, next: NextFunction) => {

@@ -1,31 +1,12 @@
-import mongoose, { Document, Schema } from "mongoose";
-import { Replace } from "../helpers/replace/replace";
+import mongoose, { Schema } from "mongoose";
 
-export enum Permissions {
-  
-  ADMINISTRATOR,
-
-  MANAGER,
-
+export enum Roles {
+  ADMIN,
+  CREATER,
   READER,
 }
 
-export interface User extends Document {
-  name: {
-    type: string,
-    required: boolean
-  },
-  email: {
-    type: string,
-    required: boolean,
-  },
-  password: {
-    type: string,
-    required: boolean
-  },
-}
-
-const userSchema = new Schema<User>({
+export const userSchema = new Schema({
   name: {
     type: String,
     required: true
@@ -38,6 +19,10 @@ const userSchema = new Schema<User>({
     type: String,
     required: true
   },
+  role: {
+    type: typeof Roles,
+    required: true,
+  }
 });
 
 export default mongoose.model('users', userSchema);

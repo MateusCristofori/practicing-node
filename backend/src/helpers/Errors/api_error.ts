@@ -25,7 +25,7 @@ export class ForbiddenError extends ApiError {
 }
 
 export class NotFoundError extends ApiError {
-constructor(msg: string) {
-  super(msg, 404);
-}
+  constructor(msg: string) {
+    super(msg, 404);
+  }
 }

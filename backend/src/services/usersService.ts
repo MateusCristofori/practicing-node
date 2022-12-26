@@ -1,8 +1,8 @@
+import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
-import { ApiError, NotFoundError } from "../helpers/api_error";
+import { NotFoundError } from "../helpers/Errors/api_error";
 import User from "../models/User";
 import { CreateUserDTO } from "../user-request-body/createUserDTO";
-import bcrypt from 'bcrypt';
 import { Validation } from "../validations/Validations";
 
 export class UserService {
@@ -26,20 +26,19 @@ export class UserService {
   }
 
   static registerNewUser = async(request: Request, response: Response) => {
-    const { name, email, password }: CreateUserDTO = request.body;
+    const { name, email, password, role }: CreateUserDTO = request.body;
 
-    if(!name || !email || !password) {
-      throw new ApiError("Os campos de 'nome', 'email', 'senha' e 'permissão' precisam ser preenchidos.", 500)
-    }
-
-    const passwordHash = generatePasswordHash(password);
+    Validation.checkUserCredentials(name, email, password, role);
+  
+    const passwordHash = await generatePasswordHash(password);
 
     const user = new User({
       name,
       email,
-      password: passwordHash
+      password: passwordHash,
+      role: role
     });
-  
+    
     await user.save();
     response.status(201).json(user);
   }
@@ -55,8 +54,8 @@ export class UserService {
  
     Validation.checkUserCredentials(name, email, password);
 
-    const newPasswordHash = generatePasswordHash(password);
-  
+   const newPasswordHash = await generatePasswordHash(password);
+
     const user = {
       name,
       email,
@@ -88,6 +87,5 @@ export class UserService {
 
 const generatePasswordHash = async(password: string) => {
   const salt: string = await bcrypt.genSalt(12);
-  const passwordHash: string = await bcrypt.hash(password, salt);
-  return passwordHash;
+  return await bcrypt.hash(password, salt);
 }
