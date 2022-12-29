@@ -1,7 +1,7 @@
 import { Response } from "express"
 import { IRequestWithToken } from "../../interfaces/IRequestWithToken"
 
-export class ActionsWithUserAuthenticated {
+export class ControllerUserAuthenticated {
   static dashboardHandler = async (request: IRequestWithToken, response: Response) => {
     return response.status(200).json({msg: "Seja bem-vindo ao dashboard!", token: request.token})
   }

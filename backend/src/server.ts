@@ -1,10 +1,9 @@
-import 'reflect-metadata';
-import { container } from 'tsyringe'
 import cors from 'cors';
 import dotenv from 'dotenv';
 import express, { Router } from 'express';
 import fileUpload from 'express-fileupload';
 import path from 'path';
+import 'reflect-metadata';
 import { connect } from './connection/connectionDB';
 import { middlewareError } from './middlewares/middlewareError';
 import privateRouter from './routes/privateRoutes';

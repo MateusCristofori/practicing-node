@@ -1,9 +1,9 @@
 import mongoose, { Schema } from "mongoose";
 
 export enum Roles {
-  ADMIN,
-  CREATER,
-  READER,
+  ADMIN = "admin",
+  CREATOR = "creator",
+  READER = "reader",
 }
 
 export const userSchema = new Schema({
@@ -20,8 +20,9 @@ export const userSchema = new Schema({
     required: true
   },
   role: {
-    type: typeof Roles,
-    required: true,
+    type: String,
+    enum: Roles,
+    default: Roles.READER
   }
 });
 

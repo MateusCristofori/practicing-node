@@ -17,7 +17,7 @@ export class UserActions {
     }
     
     const user = await User.findOne({email});
-    
+
     if(!user) {
       throw new NotFoundError("E-mail ou senhas incorretos!");
     }
@@ -31,6 +31,7 @@ export class UserActions {
     // access token
     const token = jwt.sign({
       user: {
+        id: user._id,
         name: user.name,
         email: user.email
       }
@@ -49,7 +50,8 @@ export class UserActions {
       user: {
         id: user._id,
         name: user.name,
-        email: user.email
+        email: user.email,
+        role: user.role
       },
       token
     });
