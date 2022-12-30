@@ -20,4 +20,6 @@ Observações:
 ## Cadastro e login de usuários
 ### Criar usuário manualmente
 * Para se criar um novo usuário na aplicação, acesse http://localhost:3000/blog/register.
-* Preencha os dados em um client com os atributos (```name, email, password```). Pode-se passar, também, um atributo ```role``` que irá definir o nível de permissão do usuário dentro da aplicação. Mas, caso não tenha sido passado, o padrão de criação de usuário sempre será como a **role** sendo **reader** que representa o nível mais baixo de permissão.
+* Preencha os dados em um client com os atributos (```"name", "email", "password"```). Pode-se passar, também, um atributo ```role``` que irá definir o nível de permissão do usuário dentro da aplicação. Mas, caso não tenha sido passado, o padrão de criação de usuário sempre será como a ```"role"``` sendo ```"reader"``` que representa o nível mais baixo de permissão.
+* Pode-se utilizar qualquer email durante o processo de cadastro de usuário. Mesmo que o email não exista como por exemplo: ```teste@teste.com```.
+* Para o processo de login, acesse a rota http://localhost:3000/blog/login passando o ```email``` e ```password``` cadastrados anteriormente.
