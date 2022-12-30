@@ -9,7 +9,7 @@ Precisa-se ter o Node.Js instalado e que seja na versão **Node.Js v18.12.1** ou
 Deve-se rodar o comando ``` npm install ``` no terminal para instalar todas as dependências necessárias para a execução da aplicação.
 
 ## Execução da aplicação
-Após a instalar todas as dependências da aplicação, basta rodar o comando ```npm run dev```. Isso irá iniciar a aplicação por completo.
+Após a instalar todas as dependências, basta rodar o comando ```npm run dev```. Isso irá iniciar a aplicação por completo.
 A aplicação está setada para rodar no endereço: 
 ```http://localhost:3000```
 
