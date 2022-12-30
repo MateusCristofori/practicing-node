@@ -1,5 +1,5 @@
 # API Blog.
-API feita em **Node.Js**, **JWT** e **MongoDB** para autenticações e autorizações com base em roles (permissoões) dos usuários.
+API feita em **Node.Js**, **JWT** e **MongoDB** para autenticações e autorizações com base em roles (permissões) dos usuários.
 
 # Instalação e executação do projeto
 ## Dependências globais
@@ -17,3 +17,5 @@ Observações:
 * Para derrubar a aplicação, basta utilizar as telcas ```CTRL+C```.
 * Caso seja necessário, pode-se conferir o arquivo ```.env``` para ter acesso a mais informações da aplicação.
 
+## Cadastro e login de usuários
+Para se criar um novo usuário na aplicação, acesse [link http;//localhost:3000/blog/register].
