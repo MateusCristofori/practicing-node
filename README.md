@@ -18,4 +18,4 @@ Observações:
 * Caso seja necessário, pode-se conferir o arquivo ```.env``` para ter acesso a mais informações da aplicação.
 
 ## Cadastro e login de usuários
-Para se criar um novo usuário na aplicação, acesse [link http;//localhost:3000/blog/register].
+Para se criar um novo usuário na aplicação, acesse [http;//localhost:3000/blog/register].
