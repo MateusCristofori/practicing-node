@@ -1,12 +1,11 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
-import { NotFoundError } from "../helpers/Errors/api_error";
-import User from "../models/User";
-import { CreateUserDTO } from "../user-request-body/createUserDTO";
-import { Validation } from "../validations/Validations";
+import { NotFoundError } from "../../helpers/Errors/api_error";
+import User from "../../models/User";
+import { CreateUserDTO } from "../../user-request-body/createUserDTO";
+import { Validation } from "../../validations/Validations";
 
 export class UserService {
-
   static getAllUsers = async(request: Request, response: Response) => {
     const users = await User.find({}, '-password');
   
@@ -26,17 +25,18 @@ export class UserService {
   }
 
   static registerNewUser = async(request: Request, response: Response) => {
-    const { name, email, password, role }: CreateUserDTO = request.body;
+    const { name, email, password }: CreateUserDTO = request.body;
 
-    Validation.checkUserCredentials(name, email, password, role);
-  
+    Validation.checkUserEmail(email);
+    Validation.checkUserName(name);
+    Validation.checkUserPassword(password);
+
     const passwordHash = await generatePasswordHash(password);
 
     const user = new User({
       name,
       email,
       password: passwordHash,
-      role: role
     });
     
     await user.save();
@@ -51,8 +51,10 @@ export class UserService {
     }
 
     const { name, email, password }: CreateUserDTO = request.body;
- 
-    Validation.checkUserCredentials(name, email, password);
+
+    Validation.checkUserEmail(email);
+    Validation.checkUserName(name);
+    Validation.checkUserPassword(password);
 
    const newPasswordHash = await generatePasswordHash(password);
 
@@ -82,6 +84,25 @@ export class UserService {
     }
 
     response.status(200).json({msg: "Usuário deletado com sucesso."});
+  }
+
+  static passwordRecovery = async (request: Request, response: Response) => {
+    const userEmail: string = request.body;
+    const password: string = request.body;
+
+    Validation.checkUserEmail(userEmail);
+
+    const user = User.findOne({email: userEmail});
+
+    if(!user) {
+      throw new NotFoundError("Usuário não encontrado!");
+    }
+
+    const newPassword = await generatePasswordHash(password);
+
+    const updateUser = User.findOneAndUpdate({email: userEmail, password: newPassword});
+
+    response.status(200).json({msg: "Senha alterada com sucesso!", user: updateUser});
   }
 }
 

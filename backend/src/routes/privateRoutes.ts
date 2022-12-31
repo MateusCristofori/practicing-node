@@ -1,5 +1,5 @@
 import Router from 'express';
-import { ControllerUserAuthenticated } from '../controllers/privateEndPoint/privateActions';
+import { ControllerUserAuthenticated } from '../use-cases/UserAuthenticatedUseCases';
 import { UserController } from '../controllers/userController';
 import { UserActions } from '../controllers/userLogin';
 import { checkRoleIsAllowed } from '../middlewares/checkUserRole';
