@@ -16,5 +16,6 @@ export const checkRoleIsAllowed = async (request: IRequestWithToken, response: R
   if(user.role == Roles.READER) {
     throw new UnauthorizedError("Você não está autorizado a realizar essa ação!");
   }
+  
   next();
 }

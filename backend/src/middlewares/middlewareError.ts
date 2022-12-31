@@ -7,5 +7,5 @@ export const middlewareError = (error: Error & ApiError, request: Request, respo
 
   console.log(error);
 
-  return response.status(statusCode).json(errorMessage);
+  return response.status(statusCode).json({msg: errorMessage});
 }

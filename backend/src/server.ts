@@ -1,16 +1,14 @@
 import cors from 'cors';
 import dotenv from 'dotenv';
-import express, { Router } from 'express';
+import express from 'express';
 import fileUpload from 'express-fileupload';
 import path from 'path';
-import 'reflect-metadata';
 import { connect } from './connection/connectionDB';
 import { middlewareError } from './middlewares/middlewareError';
 import privateRouter from './routes/privateRoutes';
 import publicRouter from './routes/publicRoutes';
-
+//express
 const app = express();
-
 //json
 app.use(express.json());
 //fileUpload
@@ -20,18 +18,14 @@ app.use(fileUpload({
 }))
 //cors
 app.use(cors());
-
+//dotenv
 dotenv.config();
-
 // rotas
-const privateRouters: Router = privateRouter;
-const publicRouters: Router = publicRouter;
 app.use("/blog", publicRouter);
 app.use("/users", privateRouter);
-// errors
+//Middleware de errors
 app.use(middlewareError);
-
-// conexão com banco de dados principal
+//conexão com banco de dados principal
 connect();
 
 app.listen(8000, () => {

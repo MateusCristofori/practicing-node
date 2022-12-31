@@ -13,7 +13,7 @@ export class UserActions {
     const { email, password } =  request.body;
   
     if(!email || !password) {
-      throw new ApiError("E-mail ou senha não inseridos", 422)
+      throw new ApiError("E-mail ou senha não inseridos", 422);
     }
     
     const user = await User.findOne({email});
@@ -39,7 +39,7 @@ export class UserActions {
       expiresIn: "1d"
     });
     
-    const checkValidationToken = await IBlackListToken.findOne({ token })
+    const checkValidationToken = await IBlackListToken.findOne({ token });
   
     if(checkValidationToken) {
       throw new UnauthorizedError("Token inválido.");

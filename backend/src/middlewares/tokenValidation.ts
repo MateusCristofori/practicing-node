@@ -3,7 +3,7 @@ import jwt from 'jsonwebtoken';
 import { UnauthorizedError } from "../helpers/Errors/api_error";
 import { IRequestWithToken } from "../interfaces/IRequestWithToken";
 import IBlackListToken from "../models/IBlackListToken";
-import { IJwtPayloadUserInfo } from "./IJwtPayloadUserInfo";
+import { IJwtPayloadUserInfo } from "../interfaces/IJwtPayloadUserInfo";
 
 export const tokenValidation = async (request: IRequestWithToken, response: Response, next: NextFunction) => {
   const authToken = request.headers.authorization;
