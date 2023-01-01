@@ -10,8 +10,8 @@ export class Email {
       port: 465,
       secure: true,
       auth: {
-        user: "ajhororow12@gmail.com",
-        pass: "ilizxujnimtzpngd"
+        user: process.env.EMAIL_USER,
+        pass: process.env.EMAIL_HASH
       }
     });
   }
@@ -21,7 +21,7 @@ export class Email {
       from: "Aplicação blog <ajhororow12@gmail.com>",
       to: "mateuscristofori@gmail.com",
       subject: "Teste de recuperação de senha",
-      html: "<h1>Recuperação de senha </h1> <p>Envio de email para a recuperação de senha</p>",
+      html: "<h1>Recuperação de senha</h1> <p>Envio de email para a recuperação de senha</p>",
     }).then((response) => {
       console.log("Email enviado com sucesso.");
     }).catch((err) => {
