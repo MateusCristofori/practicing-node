@@ -10,7 +10,7 @@ export class Email {
       port: 465,
       secure: true,
       auth: {
-        user: process.env.EMAIL_USER,
+        user: process.env.EMAIL_FROM,
         pass: process.env.EMAIL_HASH
       }
     });
@@ -18,8 +18,8 @@ export class Email {
 
   static sendEmail() {
     this.createTransport().sendMail({
-      from: "Aplicação blog <ajhororow12@gmail.com>",
-      to: "mateuscristofori@gmail.com",
+      from: "Aplicação blog - recuperação de senha",
+      to: process.env.EMAIL_TO,
       subject: "Teste de recuperação de senha",
       html: "<h1>Recuperação de senha</h1> <p>Envio de email para a recuperação de senha</p>",
     }).then((response) => {
