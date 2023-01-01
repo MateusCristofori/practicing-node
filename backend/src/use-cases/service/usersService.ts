@@ -4,6 +4,7 @@ import { NotFoundError } from "../../helpers/Errors/api_error";
 import User from "../../models/User";
 import { CreateUserDTO } from "../../user-request-body/createUserDTO";
 import { Validation } from "../../validations/Validations";
+import jwt from 'jsonwebtoken';
 
 export class UserService {
   static getAllUsers = async(request: Request, response: Response) => {
@@ -87,12 +88,12 @@ export class UserService {
   }
 
   static passwordRecovery = async (request: Request, response: Response) => {
-    const userEmail: string = request.body;
-    const password: string = request.body;
+    const userEmail = request.body;
+    const password = request.body;
 
     Validation.checkUserEmail(userEmail);
 
-    const user = User.findOne({email: userEmail});
+    const user = await User.findOne({ email: userEmail });
 
     if(!user) {
       throw new NotFoundError("Usuário não encontrado!");
@@ -100,7 +101,14 @@ export class UserService {
 
     const newPassword = await generatePasswordHash(password);
 
-    const updateUser = User.findOneAndUpdate({email: userEmail, password: newPassword});
+    const token = jwt.sign({
+      user: {
+        id: user._id,
+        email: user.email
+      }
+    }, process.env.SECRET as string);
+
+    const updateUser = await User.findOneAndUpdate({email: userEmail, password: newPassword});
 
     response.status(200).json({msg: "Senha alterada com sucesso!", user: updateUser});
   }

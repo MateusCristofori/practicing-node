@@ -3,7 +3,7 @@ import { ControllerUserAuthenticated } from '../use-cases/UserAuthenticatedUseCa
 import { UserController } from '../controllers/userController';
 import { UserActions } from '../controllers/userLogin';
 import { checkRoleIsAllowed } from '../middlewares/checkUserRole';
-import { tokenValidation } from '../middlewares/tokenValidation';
+import { tokenValidation } from '../middlewares/token/tokenValidation';
 
 const privateRouter = Router();
 

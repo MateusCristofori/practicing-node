@@ -1,8 +1,5 @@
 import { Response } from "express"
-import { BadRequestError, UnauthorizedError } from "../helpers/Errors/api_error"
 import { IRequestWithToken } from "../interfaces/IRequestWithToken"
-import User from "../models/User"
-import { generatePasswordHash } from "./service/usersService"
 
 export class ControllerUserAuthenticated {
   static dashboardHandler = async (request: IRequestWithToken, response: Response) => {
