@@ -27,4 +27,4 @@ Observações:
 ### Login de usuários
 * Para o processo de login, acesse a rota ```http://localhost:3000/blog/login``` passando o ```"email"``` e ```"password"``` cadastrados anteriormente.
 * Após o processo de login, o usuário terá acesso as rotas privadas que necessitavam de login. 
-* As rotas disponíveis são: ```users/dashboard```, ```users/news```, essa rota poderá receber requisições do tipo **POST** a depender do nível de permissão do usuário na plataforma e, ```users/logout``` onde realizará o processo de logout do usuário e irá invalidar o token usado pelo mesmo, fazendo necessário realizar o processo de login novamente.
+* As rotas disponíveis são: ```users/dashboard```, ```users/news```, essa rota poderá receber requisições do tipo **POST** a depender do nível de permissão do usuário na plataforma, e ```users/logout``` onde realizará o processo de logout do usuário e irá invalidar o token usado pelo mesmo, fazendo necessário realizar o processo de login novamente.
