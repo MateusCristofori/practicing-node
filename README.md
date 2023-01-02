@@ -15,7 +15,6 @@ A aplicação está setada para rodar no endereço:
 
 Observações:
 * Para derrubar a aplicação, basta utilizar as telcas ```CTRL+C```.
-* Caso seja necessário, pode-se conferir o arquivo ```.env``` para ter acesso a mais informações do projeto.
 
 ## Cadastro e login de usuários
 ### Criar usuário manualmente
