@@ -5,6 +5,7 @@ import User from "../../models/User";
 import { CreateUserDTO } from "../../user-request-body/createUserDTO";
 import { Validation } from "../../validations/Validations";
 import jwt from 'jsonwebtoken';
+import News from '../../models/News';
 
 export class UserService {
   static getAllUsers = async(request: Request, response: Response) => {
@@ -88,34 +89,36 @@ export class UserService {
   }
 
   static getNews = async (request: Request, response: Response) => {
-    return response.status(200).json({news: "Notícia de teste"})
+    const news = News.find({});
+
+    return response.status(200).json({news});
   }
 
-  static passwordRecovery = async (request: Request, response: Response) => {
-    const userEmail = request.body;
-    const password = request.body;
+  // static passwordRecovery = async (request: Request, response: Response) => {
+  //   const userEmail = request.body;
+  //   const password = request.body;
 
-    Validation.checkUserEmail(userEmail);
+  //   Validation.checkUserEmail(userEmail);
 
-    const user = await User.findOne({ email: userEmail });
+  //   const user = await User.findOne({ email: userEmail });
 
-    if(!user) {
-      throw new NotFoundError("Usuário não encontrado!");
-    }
+  //   if(!user) {
+  //     throw new NotFoundError("Usuário não encontrado!");
+  //   }
 
-    const newPassword = await generatePasswordHash(password);
+  //   const newPassword = await generatePasswordHash(password);
 
-    const token = jwt.sign({
-      user: {
-        id: user._id,
-        email: user.email
-      }
-    }, process.env.SECRET as string);
+  //   const token = jwt.sign({
+  //     user: {
+  //       id: user._id,
+  //       email: user.email
+  //     }
+  //   }, process.env.SECRET as string);
 
-    const updateUser = await User.findOneAndUpdate({email: userEmail, password: newPassword});
+  //   const updateUser = await User.findOneAndUpdate({email: userEmail, password: newPassword});
 
-    response.status(200).json({msg: "Senha alterada com sucesso!", user: updateUser});
-  }
+  //   response.status(200).json({msg: "Senha alterada com sucesso!", user: updateUser});
+  // }
 }
 
 export const generatePasswordHash = async(password: string) => {

@@ -19,13 +19,13 @@ export class UserActions {
     const user = await User.findOne({email});
 
     if(!user) {
-      throw new NotFoundError("E-mail ou senhas incorretos!");
+      throw new NotFoundError("E-mail incorreto!");
     }
   
-    const passwordMatch: Promise<boolean> = bcrypt.compare(password, user.get('password'));
+    const passwordMatch = await bcrypt.compare(password, user.get("password"));
     
     if(!passwordMatch) {
-      throw new NotFoundError("E-mail ou senha incorretos!");
+      throw new NotFoundError("Senha incorreta!");
     }
   
     // access token

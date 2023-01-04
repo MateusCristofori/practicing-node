@@ -1,4 +1,3 @@
-// import's
 import { Router } from "express";
 import { UserController } from "../controllers/userController";
 import { UserActions } from "../controllers/userLogin";
