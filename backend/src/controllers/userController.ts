@@ -22,4 +22,8 @@ export class UserController {
   static deleteUserByIdHandler = async (request: Request, response: Response) => {
     UserService.deleteUserById(request, response);
   }
+
+  static getNews = async (request: Request, response: Response) => {
+    UserService.getNews(request, response);
+  }
 }

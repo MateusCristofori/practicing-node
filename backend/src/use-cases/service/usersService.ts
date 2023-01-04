@@ -87,6 +87,10 @@ export class UserService {
     response.status(200).json({msg: "Usuário deletado com sucesso."});
   }
 
+  static getNews = async (request: Request, response: Response) => {
+    return response.status(200).json({news: "Notícia de teste"})
+  }
+
   static passwordRecovery = async (request: Request, response: Response) => {
     const userEmail = request.body;
     const password = request.body;

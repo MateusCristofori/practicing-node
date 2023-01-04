@@ -8,7 +8,6 @@ import { tokenValidation } from '../middlewares/token/tokenValidation';
 const privateRouter = Router();
 
 privateRouter.get('/dashboard', tokenValidation, ControllerUserAuthenticated.dashboardHandler);
-privateRouter.get('/news', tokenValidation, ControllerUserAuthenticated.getNews);
 privateRouter.post('/news', tokenValidation, checkRoleIsAllowed, ControllerUserAuthenticated.createNews);
 privateRouter.post('/logout', tokenValidation, UserActions.userLogOutHandler);
 privateRouter.put('/update/:id', UserController.updateUserHandler);

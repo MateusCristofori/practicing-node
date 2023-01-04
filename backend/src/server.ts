@@ -29,5 +29,5 @@ app.use(middlewareError);
 connect();
 
 app.listen(8000, () => {
-  console.log("Servidor rodando na porta 8000")
+  console.log("Servidor rodando na porta http://localhost:8000")
 });
