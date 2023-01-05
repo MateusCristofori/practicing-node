@@ -20,11 +20,11 @@ export class AuthUserService {
 
     const news = await News.find({ user_id: userId });
     
-    if(!news) {
+    if(news.length == 0) {
       throw new NotFoundError("Você ainda não possui notícias cadastradas!");
     }
 
-    response.status(200).json(news);
+    response.status(200).json({ news: news });
   }
 
   static createNews = async (request: IRequestWithToken, response: Response) => {
