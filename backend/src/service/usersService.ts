@@ -1,5 +1,5 @@
 import bcrypt from 'bcrypt';
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 import { ApiError, NotFoundError, UnauthorizedError } from "../helpers/Errors/api_error";
 import User from "../models/User";
 import { Validation } from "../validations/Validations";
@@ -17,9 +17,9 @@ export class UserService {
   }
 
   static getUserById = async(request: Request, response: Response) => {
-    const id = request.query['id'];
+    const id = request.params.id;
 
-    const user = await User.findById({_id: id});
+    const user = await User.findById({ _id: id }, '-password');
 
     if(!user) {
       throw new NotFoundError("Usuário não encontrado!");
@@ -48,18 +48,26 @@ export class UserService {
   }
 
   static getNews = async (request: Request, response: Response) => {
-    const news = await News.find({}).sort({created_at: 'asc'});
+    const news = await News.find({}, 'user_id');
+    
+    return response.status(200).json({news});
+  }
+
+  static getNewsById = async (request: Request, response: Response) => {
+    const id = request.params.id;
+
+    const news = await News.findById({ _id: id });
 
     if(!news) {
-      throw new NotFoundError("O sistema ainda não possui notícias cadastradas");
+      throw new NotFoundError("Notícia não encontrada!");
     }
 
-    return response.status(200).json({news});
+    response.status(200).json(news);
   }
 
   static userLogin = async (request: Request, response: Response) => {
 
-    const { email, password }: CreateUserDTO =  request.body;
+    const { email, password }: CreateUserDTO = request.body;
   
     if(!email || !password) {
       throw new ApiError("E-mail ou senha não inseridos", 422);
@@ -100,7 +108,6 @@ export class UserService {
         id: user._id,
         name: user.name,
         email: user.email,
-        role: user.role
       },
       token
     });

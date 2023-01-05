@@ -9,6 +9,8 @@ const privateRouter = Router();
 privateRouter.get('/dashboard', tokenValidation, AuthUserController.dashboardHandler);
 privateRouter.get('/news', tokenValidation, AuthUserService.getUserNews);
 privateRouter.post('/news', tokenValidation, checkRoleIsAllowed, AuthUserController.createNewsHandler);
+privateRouter.put('/news/:id', tokenValidation, checkRoleIsAllowed, AuthUserService.updateNews);
+privateRouter.delete('/news/:id', tokenValidation, checkRoleIsAllowed, AuthUserService.deleteNews);
 privateRouter.post('/logout', tokenValidation, AuthUserController.userLogoutHandler);
 privateRouter.put('/update/:id', AuthUserController.updateUserHandler);
 privateRouter.delete('/delete/:id', AuthUserController.deleteUserByIdHandler);

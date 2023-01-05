@@ -24,7 +24,6 @@ export const newsSchema = new mongoose.Schema({
   user_id: {
     type: Schema.Types.ObjectId,
     ref: "User",
-    required: true
   }
 })
 

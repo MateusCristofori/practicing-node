@@ -2,11 +2,12 @@ import { Router } from "express";
 import { UserController } from "../controllers/userController";
 
 const publicRouter = Router();
-// Rotas
+
 publicRouter.get('/', UserController.getAllUsersHandler);
-publicRouter.get('/:id?', UserController.getUserByIdHandler);
+publicRouter.get('/user/:id', UserController.getUserByIdHandler);
 publicRouter.post('/register', UserController.registerNewUserHandler);
 publicRouter.post('/login', UserController.userLoginHandler);
 publicRouter.get('/news', UserController.getNewsHandler);
+publicRouter.get('/news/:id?', UserController.getNewsById);
 
 export default publicRouter;

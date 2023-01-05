@@ -18,6 +18,10 @@ export class UserController {
     UserService.getNews(request, response);
   }
 
+  static getNewsById = async (request: Request, response: Response) => {
+    UserService.getNewsById(request, response);
+  }
+
   static userLoginHandler = async (request: Request, response: Response) => {
     UserService.userLogin(request, response);
   }

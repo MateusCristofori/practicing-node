@@ -18,8 +18,8 @@ export class AuthUserService {
   static getUserNews = async (request: IRequestWithToken, response: Response) => {
     const userId = request.token!.user.id;
 
-    const news = await News.find({user_id: userId});
-
+    const news = await News.find({ user_id: userId });
+    
     if(!news) {
       throw new NotFoundError("Você ainda não possui notícias cadastradas!");
     }
@@ -51,10 +51,8 @@ export class AuthUserService {
   static updateNews = async (request: IRequestWithToken, response: Response) => {
     const news_id = request.params.id;
 
-    const news = await News.find({ _id: news_id });
-    
-    if(!news) {
-      throw new NotFoundError("A notícia não existe!");
+    if(!news_id) {
+      throw new NotFoundError("O id da notícia precisa ser válido!");
     }
 
     const { title, subtitle, category, subject }: CreateNewsDTO = request.body;
@@ -66,7 +64,8 @@ export class AuthUserService {
       subject,
     }
 
-    response.status(200).json(updatedNews);
+    const news = await News.findOneAndUpdate({_id: news_id}, updatedNews);
+    response.status(200).json(news);
   }
 
   static deleteNews = async (request: IRequestWithToken, response: Response) => {
@@ -80,7 +79,6 @@ export class AuthUserService {
 
     response.status(200).json({msg: "Notícia deletada com sucesso!", news: news});
   }
-
 
   static userLogOut = (request: IRequestWithToken, response: Response) => {
  
