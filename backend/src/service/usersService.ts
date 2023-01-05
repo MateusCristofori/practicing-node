@@ -47,8 +47,8 @@ export class UserService {
     response.status(201).json(user);
   }
 
-  static getNews = async (request: Request, response: Response) => {
-    const news = await News.find({}, 'user_id');
+  static getAllNews = async (request: Request, response: Response) => {
+    const news = await News.find({}, '-user_id');
     
     return response.status(200).json({news});
   }

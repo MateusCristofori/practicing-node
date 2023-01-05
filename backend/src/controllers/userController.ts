@@ -14,8 +14,8 @@ export class UserController {
     UserService.registerNewUser(request, response);
   }
   
-  static getNewsHandler = async (request: Request, response: Response) => {
-    UserService.getNews(request, response);
+  static getAllNewsHandler = async (request: Request, response: Response) => {
+    UserService.getAllNews(request, response);
   }
 
   static getNewsById = async (request: Request, response: Response) => {
