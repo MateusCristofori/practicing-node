@@ -1,4 +1,4 @@
-import mongoose from "mongoose";
+import mongoose, { Schema } from "mongoose";
 
 export const newsSchema = new mongoose.Schema({
   title: {
@@ -15,6 +15,11 @@ export const newsSchema = new mongoose.Schema({
   },
   subject: {
     type: String,
+    required: true
+  },
+  // Em desenvolvimento.
+  user_id: {
+    type: Schema.Types.ObjectId,
     required: true
   }
 })

@@ -2,10 +2,10 @@ import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
 import { NotFoundError } from "../../helpers/Errors/api_error";
 import User from "../../models/User";
-import { CreateUserDTO } from "../../user-request-body/createUserDTO";
 import { Validation } from "../../validations/Validations";
 import jwt from 'jsonwebtoken';
 import News from '../../models/News';
+import { CreateUserDTO } from '../../dtos/createUserDTO';
 
 export class UserService {
   static getAllUsers = async(request: Request, response: Response) => {

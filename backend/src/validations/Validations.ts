@@ -19,3 +19,29 @@ export class Validation {
     }
   }
 }
+
+export class CreateNewsValidation {
+  static checkTitle(title: string) {
+    if(!title) {
+      throw new BadRequestError("A notícia deve possuir um título!");
+    }
+  }
+
+  static checkSubTitle(subTitle: string) {
+    if(!subTitle) {
+      throw new BadRequestError("A notícia deve possuir um subtítulo!");
+    }
+  }
+
+  static checkCategory(category: string) {
+    if(!category) {
+      throw new BadRequestError("A notícia deve possuir uma categoria!");
+    }    
+  }
+
+  static checkSubject(subject: string) {
+    if(!subject) {
+      throw new BadRequestError("A notícia deve possuir conteúdo condizente com sua categoria!");
+    }
+  }
+}
