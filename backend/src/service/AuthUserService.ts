@@ -48,6 +48,40 @@ export class AuthUserService {
     return response.status(200).send({news})
   }
 
+  static updateNews = async (request: IRequestWithToken, response: Response) => {
+    const news_id = request.params.id;
+
+    const news = await News.find({ _id: news_id });
+    
+    if(!news) {
+      throw new NotFoundError("A notícia não existe!");
+    }
+
+    const { title, subtitle, category, subject }: CreateNewsDTO = request.body;
+    
+    const updatedNews = {
+      title,
+      subtitle,
+      category,
+      subject,
+    }
+
+    response.status(200).json(updatedNews);
+  }
+
+  static deleteNews = async (request: IRequestWithToken, response: Response) => {
+    const news_id = request.params.id;
+
+    if(!news_id) {
+      throw new NotFoundError("A notícia não existe!");
+    }
+
+    const news = await News.findOneAndDelete({_id: news_id});
+
+    response.status(200).json({msg: "Notícia deletada com sucesso!", news: news});
+  }
+
+
   static userLogOut = (request: IRequestWithToken, response: Response) => {
  
     const invalidToken = request.headers.authorization;
