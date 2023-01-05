@@ -1,11 +1,13 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
-import { NotFoundError } from "../../helpers/Errors/api_error";
+import { ApiError, NotFoundError, UnauthorizedError } from "../../helpers/Errors/api_error";
 import User from "../../models/User";
 import { Validation } from "../../validations/Validations";
 import jwt from 'jsonwebtoken';
 import News from '../../models/News';
 import { CreateUserDTO } from '../../dtos/createUserDTO';
+import IBlackListToken from '../../models/IBlackListToken';
+import { generatePasswordHash } from '../../helpers/generatePasswordHash/generatePasswordHash';
 
 export class UserService {
   static getAllUsers = async(request: Request, response: Response) => {
@@ -45,53 +47,59 @@ export class UserService {
     response.status(201).json(user);
   }
 
-  static updateUser = async(request: Request, response: Response) => {
-    const id: string = request.params.id;
-    
-    if(!id) {
-      throw new NotFoundError("Usuário não encontrado!");
-    }
-
-    const { name, email, password }: CreateUserDTO = request.body;
-
-    Validation.checkUserEmail(email);
-    Validation.checkUserName(name);
-    Validation.checkUserPassword(password);
-
-   const newPasswordHash = await generatePasswordHash(password);
-
-    const user = {
-      name,
-      email,
-      password: newPasswordHash
-    };
-  
-    const updatedUser = await User.findOneAndUpdate({_id: id}, user);
-    
-    if(!updatedUser) {
-      throw new NotFoundError("Usuário não encontrado!");
-    }
-  
-    response.status(200).json(user);
-  }
-
-  static deleteUserById = async(request: Request, response: Response) => {
-
-    const id: string = request.params.id;
-    
-    const deletedUser = await User.findByIdAndDelete({_id: id});
-
-    if(!deletedUser) {
-      throw new NotFoundError("Usuário não encontrado!");
-    }
-
-    response.status(200).json({msg: "Usuário deletado com sucesso."});
-  }
-
   static getNews = async (request: Request, response: Response) => {
     const news = News.find({});
 
     return response.status(200).json({news});
+  }
+
+  static userLogin = async (request: Request, response: Response) => {
+
+    const { email, password } =  request.body;
+  
+    if(!email || !password) {
+      throw new ApiError("E-mail ou senha não inseridos", 422);
+    }
+    
+    const user = await User.findOne({email});
+
+    if(!user) {
+      throw new NotFoundError("E-mail incorreto!");
+    }
+  
+    const passwordMatch = await bcrypt.compare(password, user.get("password"));
+    
+    if(!passwordMatch) {
+      throw new NotFoundError("Senha incorreta!");
+    }
+  
+    // access token
+    const token = jwt.sign({
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email
+      }
+    }, process.env.SECRET as string, {
+      expiresIn: "1d"
+    });
+    
+    const checkValidationToken = await IBlackListToken.findOne({ token });
+  
+    if(checkValidationToken) {
+      throw new UnauthorizedError("Token inválido.");
+    }
+  
+    response.status(200).json({
+      auth: true,
+      user: {
+        id: user._id,
+        name: user.name,
+        email: user.email,
+        role: user.role
+      },
+      token
+    });
   }
 
   // static passwordRecovery = async (request: Request, response: Response) => {
@@ -119,9 +127,4 @@ export class UserService {
 
   //   response.status(200).json({msg: "Senha alterada com sucesso!", user: updateUser});
   // }
-}
-
-export const generatePasswordHash = async(password: string) => {
-  const salt: string = await bcrypt.genSalt(12);
-  return await bcrypt.hash(password, salt);
 }

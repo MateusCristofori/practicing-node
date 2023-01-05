@@ -2,7 +2,6 @@ import { Request, Response } from "express";
 import { UserService } from '../use-cases/service/usersService';
 
 export class UserController {
-
   static getAllUsersHandler = async (request: Request, response: Response) => {
     UserService.getAllUsers(request, response);
   }
@@ -15,15 +14,11 @@ export class UserController {
     UserService.registerNewUser(request, response);
   }
   
-  static updateUserHandler = async (request: Request, response: Response) => {
-    UserService.updateUser(request, response);
-  }
-  
-  static deleteUserByIdHandler = async (request: Request, response: Response) => {
-    UserService.deleteUserById(request, response);
+  static getNewsHandler = async (request: Request, response: Response) => {
+    UserService.getNews(request, response);
   }
 
-  static getNews = async (request: Request, response: Response) => {
-    UserService.getNews(request, response);
+  static userLoginHandler = async (request: Request, response: Response) => {
+    UserService.userLogin(request, response);
   }
 }
