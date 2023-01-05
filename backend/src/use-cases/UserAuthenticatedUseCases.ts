@@ -10,7 +10,7 @@ export class ControllerUserAuthenticated {
   }
 
   static userNews = async (request: IRequestWithToken, response: Response) => {
-    // Em desenvolvimento.
+    // Em desenvolvimento...
     const userId = request.token!.user.id;
 
     const news = News.find({user_id: userId});

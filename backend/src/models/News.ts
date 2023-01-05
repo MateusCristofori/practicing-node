@@ -17,7 +17,7 @@ export const newsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // Em desenvolvimento.
+  // Em desenvolvimento...
   user_id: {
     type: Schema.Types.ObjectId,
     required: true
