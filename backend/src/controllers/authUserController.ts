@@ -11,6 +11,10 @@ export class AuthUserController {
     AuthUserService.createNews(request, response);
   }
 
+  static updateNewsHandler = async (request: IRequestWithToken, response: Response) => {
+    AuthUserService.updateNews(request, response);
+  }
+
   static getUserNewsHandler = async (request: IRequestWithToken, response: Response) => {
     AuthUserService.getUserNews(request, response);
   }
@@ -25,5 +29,9 @@ export class AuthUserController {
 
   static deleteUserByIdHandler = async (request: IRequestWithToken, response: Response) => {
     AuthUserService.deleteUserById(request, response);
+  }
+
+  static deleteNewsHandler = async (request: IRequestWithToken, response: Response) => {
+    AuthUserService.deleteNews(request, response);
   }
 }

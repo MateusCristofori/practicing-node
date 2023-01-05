@@ -7,15 +7,18 @@ export const checkRoleIsAllowed = async (request: IRequestWithToken, response: R
   if (!request.token) {
     throw new BadRequestError("Token não existente!");
   }
-  const user = await User.findById({_id: request.token.user.id});
+
+  const userId = request.token.user.id;
+
+  const user = await User.findById({ _id: userId });
   
   if(!user) {
     throw new BadRequestError("Usuário não encontrado");
   }
 
   if(user.role === Roles.READER) {
-    throw new UnauthorizedError("Você não está autorizado a realizar essa ação!");
+    throw new UnauthorizedError("Você não tem permissão para realizar essa ação!");
   }
-  
+
   next();
 }
