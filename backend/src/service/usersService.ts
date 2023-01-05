@@ -1,13 +1,13 @@
 import bcrypt from 'bcrypt';
 import { Request, Response } from "express";
-import { ApiError, NotFoundError, UnauthorizedError } from "../../helpers/Errors/api_error";
-import User from "../../models/User";
-import { Validation } from "../../validations/Validations";
+import { ApiError, NotFoundError, UnauthorizedError } from "../helpers/Errors/api_error";
+import User from "../models/User";
+import { Validation } from "../validations/Validations";
 import jwt from 'jsonwebtoken';
-import News from '../../models/News';
-import { CreateUserDTO } from '../../dtos/createUserDTO';
-import IBlackListToken from '../../models/IBlackListToken';
-import { generatePasswordHash } from '../../helpers/generatePasswordHash/generatePasswordHash';
+import News from '../models/News';
+import IBlackListToken from '../models/IBlackListToken';
+import { generatePasswordHash } from '../helpers/generatePasswordHash/generatePasswordHash';
+import { CreateUserDTO } from '../dtos/CreateUserDTO';
 
 export class UserService {
   static getAllUsers = async(request: Request, response: Response) => {
@@ -19,7 +19,7 @@ export class UserService {
   static getUserById = async(request: Request, response: Response) => {
     const id = request.query['id'];
 
-    const user = User.findById({_id: id});
+    const user = await User.findById({_id: id});
 
     if(!user) {
       throw new NotFoundError("Usuário não encontrado!");
@@ -48,14 +48,18 @@ export class UserService {
   }
 
   static getNews = async (request: Request, response: Response) => {
-    const news = News.find({});
+    const news = await News.find({}).sort({created_at: 'asc'});
+
+    if(!news) {
+      throw new NotFoundError("O sistema ainda não possui notícias cadastradas");
+    }
 
     return response.status(200).json({news});
   }
 
   static userLogin = async (request: Request, response: Response) => {
 
-    const { email, password } =  request.body;
+    const { email, password }: CreateUserDTO =  request.body;
   
     if(!email || !password) {
       throw new ApiError("E-mail ou senha não inseridos", 422);

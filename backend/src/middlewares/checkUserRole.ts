@@ -13,7 +13,7 @@ export const checkRoleIsAllowed = async (request: IRequestWithToken, response: R
     throw new BadRequestError("Usuário não encontrado");
   }
 
-  if(user.role == Roles.READER) {
+  if(user.role === Roles.READER) {
     throw new UnauthorizedError("Você não está autorizado a realizar essa ação!");
   }
   

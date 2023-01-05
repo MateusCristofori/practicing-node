@@ -1,34 +1,33 @@
 import { Response } from "express";
-import { CreateNewsDTO } from "../../dtos/CreateNewsDTO";
-import { NotFoundError } from "../../helpers/Errors/api_error";
-import { IRequestWithToken } from "../../interfaces/IRequestWithToken";
-import IBlackListToken from "../../models/IBlackListToken";
-import News from "../../models/News";
-import User from "../../models/User";
-import { CreateNewsValidation, Validation } from "../../validations/Validations";
-import { generatePasswordHash } from "../../helpers/generatePasswordHash/generatePasswordHash";
-import { CreateUserDTO } from "../../dtos/createUserDTO";
+import { CreateNewsDTO } from "../dtos/CreateNewsDTO";
+import { NotFoundError } from "../helpers/Errors/api_error";
+import { IRequestWithToken } from "../interfaces/IRequestWithToken";
+import IBlackListToken from "../models/IBlackListToken";
+import News from "../models/News";
+import User from "../models/User";
+import { CreateNewsValidation, Validation } from "../validations/Validations";
+import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
+import { CreateUserDTO } from "../dtos/CreateUserDTO";
 
 export class AuthUserService {
-  static dashboardHandler = async (request: IRequestWithToken, response: Response) => {
+  static dashboard = async (request: IRequestWithToken, response: Response) => {
     return response.status(200).json({msg: "Seja bem-vindo ao dashboard!", token: request.token})
   }
   
-  // Em desenvolvimento...
-  // static getUserNewsHandler = async (request: IRequestWithToken, response: Response) => {
-  //   const userId = request.token!.user.id;
+  // Corrigir erro -> O método está retornando um array vazio de notícias quando deveria retornar um "NotFoundError()".
+  static getUserNews = async (request: IRequestWithToken, response: Response) => {
+    const userId = request.token!.user.id;
 
-  //   const news = News.find({user_id: userId});
+    const news = await News.find({user_id: userId});
 
-  //   if(!news) {
-  //     response.status(200).json({msg: "Você ainda não possui nenhuma notícia publicada!"});
-  //     return;
-  //   }
+    if(!news) {
+      throw new NotFoundError("Você ainda não possui notícias cadastradas!");
+    }
 
-  //   response.status(200).json(news);
-  // }
+    response.status(200).json(news);
+  }
 
-  static createNewsHandler = async (request: IRequestWithToken, response: Response) => {
+  static createNews = async (request: IRequestWithToken, response: Response) => {
     const { title, subtitle, category, subject }: CreateNewsDTO = request.body;
 
     CreateNewsValidation.checkTitle(title);
@@ -36,17 +35,20 @@ export class AuthUserService {
     CreateNewsValidation.checkCategory(category);
     CreateNewsValidation.checkSubject(subject);
 
-    const news = News.create({
+    const news = new News({
       title,
       subject,
       category,
-      subtitle
+      subtitle,
+      created_at: Date.now(),
+      user_id: request.token!.user.id
     })
 
+    await news.save();
     return response.status(200).send({news})
   }
 
-  static userLogOutHandler = (request: IRequestWithToken, response: Response) => {
+  static userLogOut = (request: IRequestWithToken, response: Response) => {
  
     const invalidToken = request.headers.authorization;
     const token = invalidToken && invalidToken.split(" ")[1];
@@ -90,7 +92,7 @@ export class AuthUserService {
     response.status(200).json(user);
   }
 
-  static deleteUserByIdhandler = async(request: IRequestWithToken, response: Response) => {
+  static deleteUserById = async(request: IRequestWithToken, response: Response) => {
 
     const id: string = request.params.id;
     

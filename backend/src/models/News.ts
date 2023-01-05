@@ -17,9 +17,13 @@ export const newsSchema = new mongoose.Schema({
     type: String,
     required: true
   },
-  // Em desenvolvimento...
+  created_at: {
+    type: Date,
+    required: true
+  },
   user_id: {
     type: Schema.Types.ObjectId,
+    ref: "User",
     required: true
   }
 })
