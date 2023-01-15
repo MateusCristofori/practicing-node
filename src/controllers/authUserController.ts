@@ -13,23 +13,6 @@ export class AuthUserController {
     return res.status(200).json({ msg: "Seja bem-vindo ao dashboard!", token: req.token })
   }
 
-  static getUserNewsHandler = async (req: IRequestWithToken, res: Response) => {
-    if(!req.token) {
-      return res.status(403).json({ error: "Token de autorização autorização inválido!" });
-    }
-
-    const userId = req.token.user.id;
-
-    const news = await News.find({ user_id: userId });
-    
-    if(news.length == 0) {
-      return res.status(400).json({ error: "Você ainda não possui notícias cadastradas!" });
-    }
-
-    res.status(200).json({ news });
-  }
-
-
   static createNewsHandler = async (req: IRequestWithToken, res: Response) => {
     const { title, subtitle, category, subject }: CreateNewsDTO = req.body;
 
@@ -51,26 +34,6 @@ export class AuthUserController {
     return res.status(200).send({ news })
   }
 
-  static updateNewsHandler = async (req: IRequestWithToken, res: Response) => {
-    const news_id = req.params.id;
-
-    if(!news_id) {
-      return res.status(403).json({ error: "O id da notícia precisa ser válido!" });
-    }
-
-    const { title, subtitle, category, subject }: CreateNewsDTO = req.body;
-    
-    const updatedNews = {
-      title,
-      subtitle,
-      category,
-      subject,
-    }
-
-    const news = await News.findOneAndUpdate({ _id: news_id }, updatedNews);
-    res.status(200).json({ news });
-  }
- 
   static userLogoutHandler = async (req: IRequestWithToken, res: Response) => {
     const invalidToken = req.headers.authorization;
     const token = invalidToken && invalidToken.split(" ")[1];
@@ -130,19 +93,5 @@ export class AuthUserController {
     res.status(200).json({msg: "Usuário deletado com sucesso."});
   }
 
-  static deleteNewsHandler = async (req: IRequestWithToken, res: Response) => {
-    if(!req.token) {
-      return res.status(403).json({ error: "Token de autorização inválido!" });
-    }
-
-    const news_id = req.params.id;
-
-    if(!news_id) {
-      return res.status(404).json({ error: "Notícia não encontrada!" });
-    }
-
-    const news = await News.findOneAndDelete({ _id: news_id });
-
-    res.status(200).json({ msg: "Notícia deletada com sucesso!", news });
-  }
+  
 }
