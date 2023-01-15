@@ -2,7 +2,6 @@ import Router from 'express';
 import { AuthUserController } from '../controllers/authUserController';
 import { checkRoleIsAllowed } from '../middlewares/checkUserRole';
 import { tokenValidation } from '../middlewares/token/tokenValidation';
-import { AuthUserService } from '../service/AuthUserService';
 
 const privateRouter = Router();
 
