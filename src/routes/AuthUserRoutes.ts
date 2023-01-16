@@ -18,5 +18,7 @@ authUserRoutes.route("/users/:id?")
 
   .delete(authUserController.deleteUserById)
 
+authUserRoutes.route("/logout")
+  .post(authUserController.userLogout)
 
 export default authUserRoutes;

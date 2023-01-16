@@ -14,6 +14,7 @@ model User {
   password String
   post     Post[]
   news     News[]
+  role     Roles
 }
 
 model Post {
@@ -45,5 +46,11 @@ model News {
 model BlackListToken {
   id     String @id @default(uuid())
   token  String
-  userId String
+  userId String?
+}
+
+enum Roles {
+  ADMIN
+  CREATOR
+  READER
 }

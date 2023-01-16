@@ -1,12 +1,7 @@
 import { Response } from "express";
 import { db } from "../database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
-import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
 import { IRequestWithToken } from "../interfaces/IRequestWithToken";
-import IBlackListToken from "../models/IBlackListToken";
-import News from "../models/News";
-import User from "../models/User";
-import { Validation } from "../validations/Validations";
 
 export default class AuthUserController {
   async dashboard(req: IRequestWithToken, res: Response) {
@@ -33,61 +28,58 @@ export default class AuthUserController {
   }
 
   async updateUser(req: IRequestWithToken, res: Response) {
-    const id: string = req.params.id;
-    
-    if(!id) {
-      return res.status(400).json({ error: "O id do usuário precisa ser válido." });
+    if(!req.token) {
+      return res.status(403).json({ error: "Token de autorização inválido." });
     }
 
-    const { name, email, password }: CreateUserDTO = req.body;
+    const user_id = req.token.user.id;
 
-    Validation.checkUserEmail(email);
-    Validation.checkUserName(name);
-    Validation.checkUserPassword(password);
+    const { content }: CreateUserDTO = req.body;
 
-   const newPasswordHash = await generatePasswordHash(password);
+    const updatedUser = await db.user.update({
+      where: {
+        id: user_id
+      },
+      data: {
+        name: content?.name,
+        email: content?.email,
+        password: content?.password
+      }
+    });
 
-    const user = {
-      name,
-      email,
-      password: newPasswordHash
-    };
-  
-    const updatedUser = await User.findOneAndUpdate({ _id: id }, user);
-    
-    if(!updatedUser) {
-      return res.status(404).json({ error: "Usuário não encontrado!" });
-    }
-  
-    res.status(200).json({ user });
+    return res.status(204).json({ updatedUser });
   }
 
   async deleteUserById(req: IRequestWithToken, res: Response) {
     if(!req.token) {
-      return res.status(403).json({error: "Token de autorização inválido!"});
+      return res.status(403).json({ error: "Token de autorização inválido." });
     }
 
-    const id: string = req.params.id;
-    
-    const deletedUser = await User.findByIdAndDelete({ _id: id });
+    const user_id = req.token.user.id;
 
-    if(!deletedUser) {
-      return res.status(404).json({ error: "Usuário não encontrado!" });
-    }
+    const deletedUser = await db.user.delete({
+      where: {
+        id: user_id
+      }
+    });
 
-    res.status(200).json({msg: "Usuário deletado com sucesso."});
+    return res.status(200).json({ deletedUser });
   }
   
-  async userLogoutHandler(req: IRequestWithToken, res: Response) {
+  async userLogout(req: IRequestWithToken, res: Response) {
     const invalidToken = req.headers.authorization;
     const token = invalidToken && invalidToken.split(" ")[1];
-  
-    const insertInvalidToken = new IBlackListToken({
-      token: token
+
+    if(!token) {
+      return res.status(403).json({ error: "Token de autorização inválido." });
+    }
+
+    const blackToken = await db.blackListToken.create({
+      data: {
+        token
+      }
     });
-  
-    const blackListToken = insertInvalidToken.save();
-  
+
     res.status(200).json({ msg: "Deslogado. Faça o processo de login novamente!" });
   }
 }
