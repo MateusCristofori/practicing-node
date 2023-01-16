@@ -1,4 +1,5 @@
 import { Response } from "express";
+import { db } from "../database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
 import { IRequestWithToken } from "../interfaces/IRequestWithToken";
@@ -15,8 +16,13 @@ export default class AuthUserController {
 
     const user_id = req.token.user.id;
 
-    const userNews = await News.find({
-      user_id: user_id
+    const userNews = await db.news.findMany({
+      where: {
+        userId: user_id
+      },
+      include: {
+        post: true
+      }
     });
 
     if(!userNews) {
@@ -57,7 +63,7 @@ export default class AuthUserController {
   }
 
   async deleteUserById(req: IRequestWithToken, res: Response) {
-     if(!req.token) {
+    if(!req.token) {
       return res.status(403).json({error: "Token de autorização inválido!"});
     }
 

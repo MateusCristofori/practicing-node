@@ -1,0 +1,49 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       String @id @default(uuid())
+  name     String @unique
+  email    String @unique
+  password String
+  post     Post[]
+  news     News[]
+}
+
+model Post {
+  id        String   @id @default(uuid())
+  content   String
+  News      News?
+  comment   Comment?
+  author    User     @relation(fields: [author_id], references: [id])
+  author_id String
+}
+
+model Comment {
+  id     String @id @default(uuid())
+  post   Post   @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId String @unique
+  News   News[]
+}
+
+model News {
+  id        String   @id @default(uuid())
+  post      Post     @relation(fields: [postId], references: [id], onDelete: Cascade)
+  postId    String   @unique
+  comment   Comment? @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  commentId String?  @unique
+  userId    String?
+  User      User?    @relation(fields: [userId], references: [id])
+}
+
+model BlackListToken {
+  id     String @id @default(uuid())
+  token  String
+  userId String
+}

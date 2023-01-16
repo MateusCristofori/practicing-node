@@ -1,8 +1,8 @@
 import { Response } from "express";
+import { db } from "../database/prisma";
 import { CreateNewsDTO } from "../dtos/CreateNewsDTO";
+import { createPost } from "../helpers/createPost/createPost";
 import { IRequestWithToken } from "../interfaces/IRequestWithToken";
-import News from "../models/News";
-import { CreateNewsValidation } from "../validations/Validations";
 
 export default class NewsController {
   async listNews(req: IRequestWithToken, res: Response) {
@@ -10,10 +10,14 @@ export default class NewsController {
       return res.status(403).json({ error: "Token de autorização autorização inválido!" });
     }
 
-    const news = await News.find({}, "-user_id");
-    
+    const news = await db.news.findMany({
+      select: {
+        userId: false
+      }
+    });
+
     if(news.length == 0) {
-      return res.status(400).json({ error: "Você ainda existe notícias cadastradas!" });
+      return res.status(400).json({ error: "Ainda não existem notícias cadastradas!" });
     }
 
     res.status(200).json({ news });
@@ -26,7 +30,14 @@ export default class NewsController {
 
     const news_id = req.token.user.id;
 
-    const news = await News.findById({ _id: news_id });
+    const news = await db.news.findFirst({
+      where: {
+        id: news_id
+      },
+      include: {
+        post: true
+      }
+    });
 
     if(!news) {
       return res.status(404).json({ error: "Notícia não encontrada." });
@@ -40,24 +51,22 @@ export default class NewsController {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
 
-    const { title, subtitle, category, subject }: CreateNewsDTO = req.body;
+    const author_id = req.token.user.id;
 
-    CreateNewsValidation.checkTitle(title);
-    CreateNewsValidation.checkSubTitle(subtitle);
-    CreateNewsValidation.checkCategory(category);
-    CreateNewsValidation.checkSubject(subject);
+    const { content }: CreateNewsDTO = req.body;
 
-    const news = new News({
-      title,
-      subject,
-      category,
-      subtitle,
-      created_at: Date.now(),
-      user_id: req.token.user.id
+    const newPost = await createPost(author_id, content);
+
+    const newNews = await db.news.create({
+      data: {
+        postId: newPost.id
+      },
+      include: {
+        post: true
+      }
     });
 
-    await news.save();
-    return res.status(200).send({ news });
+    return res.status(200).send({ newNews });
   }
 
   async updateNews(req: IRequestWithToken, res: Response) {
@@ -65,26 +74,50 @@ export default class NewsController {
       return res.status(403).json({ error: "Token de autorização invádlido. "});
     }
 
+    const author_id = req.token.user.id;
+
+    const author = await db.user.findFirst({
+      where: {
+        id: author_id
+      }
+    });
+
+    if(!author) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
     const news_id = req.params.id;
 
-    const findNews = await News.findById({ _id: news_id });
+    const news = await db.news.findFirst({
+      where: {
+        id: news_id
+      },
+      include: {
+        post: true
+      }
+    });
 
-    if(!findNews) {
+    if(!news) {
       return res.status(404).json({ error: "Notícia não encontrada." });
     }
 
-    const { title, subtitle, category, subject }: CreateNewsDTO = req.body;
-    
-    const updatedNews = {
-      title,
-      subtitle,
-      category,
-      subject,
+    if(news.post.author_id !== author.id) {
+      return res.status(403).json({ error: "Apenas o usuário que criou a notícia pode alterá-la." });
     }
 
-    const news = await News.findOneAndUpdate({ _id: news_id }, updatedNews);
+    const { content } = req.body;
 
-    res.status(200).json({ news });
+
+    const newPost = await db.post.update({
+      where: {
+        id: news.postId
+      },
+      data: {
+        content
+      }
+    });
+
+    return res.status(204).json({ newPost });
   }
 
   async deleteNews(req: IRequestWithToken, res: Response) {
@@ -94,14 +127,22 @@ export default class NewsController {
 
     const news_id = req.params.id;
 
-    const findNews = await News.findById({ _id: news_id });
+    const news = await db.news.findFirst({
+      where: {
+        id: news_id
+      }
+    });
 
-    if(!findNews) {
+    if(!news) {
       return res.status(404).json({ error: "Notícia não encontrada." });
     }
 
-    const news = await News.findOneAndDelete({ _id: news_id });
+    const deletedNews = await db.news.delete({
+      where: {
+        id: news_id
+      }
+    });
 
-    res.status(200).json({ msg: "Notícia deletada com sucesso!", news });
+    return res.status(204).json({ deletedNews });
   }
 }
