@@ -1,5 +1,5 @@
 # API Blog.
-API feita em **Node.Js**, **JWT** e **MongoDB** para autenticações e autorizações com base em roles (permissões) dos usuários.
+API feita em **Node.Js**, **JWT** e **MySQL** para autenticações e autorizações com base em roles (permissões) dos usuários.
 
 # Instalação e executação do projeto
 ## Dependências globais
@@ -18,12 +18,12 @@ Observações:
 
 ## Cadastro e login de usuários
 ### Criar usuário manualmente
-* Para se criar um novo usuário na aplicação, acesse http://localhost:8000/blog/register.
+* Para se criar um novo usuário na aplicação, acesse http://localhost:8000/register.
 * Preencha os dados em um client com os atributos (```"name", "email", "password"```). Pode-se passar, também, um atributo ```role``` que irá definir o nível de permissão do usuário dentro da aplicação. Mas, caso não tenha sido passado, o padrão de criação de usuário sempre será como a ```"role"``` sendo ```"reader"``` que representa o nível mais baixo de permissão.
 * Pode-se utilizar qualquer email durante o processo de cadastro de usuário. Mesmo que o email não exista como por exemplo: ```teste@teste.com```.
 * Caso o usuário tente enviar uma requisição com os campos vazios, um erro será disparado na pilha de execução do projeto, a ação será invalidada e uma mensagem de erro será retornada.
 
 ### Login de usuários
-* Para o processo de login, acesse a rota ```http://localhost:8000/blog/login``` passando o ```"email"``` e ```"password"``` cadastrados anteriormente.
+* Para o processo de login, acesse a rota ```http://localhost:8000/login``` passando o ```"email"``` e ```"password"``` cadastrados anteriormente.
 * Após o processo de login, o usuário terá acesso as rotas privadas que necessitavam de login. 
-* As rotas disponíveis são: ```users/dashboard```, ```users/news```, essa rota poderá receber requisições do tipo **POST** a depender do nível de permissão do usuário na plataforma, e ```users/logout``` onde realizará o processo de logout do usuário e irá invalidar o token usado pelo mesmo, fazendo necessário realizar o processo de login novamente.
+* As rotas disponíveis são: ```/dashboard```, onde poderemos ter acesso à todas as notícias do usuário logado, e ```/logout``` onde realizará o processo de logout do usuário e irá invalidar o token usado pelo mesmo, fazendo necessário realizar o processo de login novamente., 
