@@ -14,7 +14,7 @@ export const tokenValidation = async (req: IRequestWithToken, res: Response, nex
     where: {
       token
     }
-  })
+  });
 
   if(invalidToken) {
     return res.status(403).json({ error: "Token inválido!" });
@@ -25,5 +25,6 @@ export const tokenValidation = async (req: IRequestWithToken, res: Response, nex
   }
 
   req.token = (jwt.verify(token, secret)) as IJwtPayloadUserInfo;
+  
   next();
 }
