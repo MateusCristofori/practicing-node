@@ -7,7 +7,6 @@ const publicRouter = Router();
 const userController = new UserController();
 
 
-publicRouter.get('/', userController.getAllUsersHandler);
 publicRouter.get('/user/:id', userController.getUserByIdHandler);
 publicRouter.get('/news', userController.getAllNewsHandler);
 publicRouter.get('/news/:id?', userController.getNewsById);
