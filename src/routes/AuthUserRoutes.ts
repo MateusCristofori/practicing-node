@@ -2,15 +2,21 @@ import Router from 'express';
 import AuthUserController from '../controllers/authUserController';
 import { tokenValidation } from '../middlewares/token/tokenValidation';
 
-const privateRouter = Router();
+const authUserRoutes = Router();
+authUserRoutes.use(tokenValidation);
 
 // -------- //
 const authUserController = new AuthUserController();
 
+authUserRoutes.route("/dashboard")
 
-privateRouter.get('/dashboard', tokenValidation, authUserController.dashboardHandler);
-privateRouter.post('/logout', tokenValidation, authUserController.userLogoutHandler);
-privateRouter.put('/update/:id', authUserController.updateUserHandler);
-privateRouter.delete('/delete/:id', authUserController.deleteUserByIdHandler);
+  .get(authUserController.dashboard)
 
-export default privateRouter;
+authUserRoutes.route("/users/:id?")
+
+  .put(authUserController.updateUser)
+
+  .delete(authUserController.deleteUserById)
+
+
+export default authUserRoutes;

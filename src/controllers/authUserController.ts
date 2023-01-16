@@ -8,7 +8,7 @@ import User from "../models/User";
 import { Validation } from "../validations/Validations";
 
 export default class AuthUserController {
-  async dashboardHandler(req: IRequestWithToken, res: Response) {
+  async dashboard(req: IRequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -26,7 +26,7 @@ export default class AuthUserController {
     return res.status(200).json({ userNews });
   }
 
-  async updateUserHandler(req: IRequestWithToken, res: Response) {
+  async updateUser(req: IRequestWithToken, res: Response) {
     const id: string = req.params.id;
     
     if(!id) {
@@ -56,7 +56,7 @@ export default class AuthUserController {
     res.status(200).json({ user });
   }
 
-  async deleteUserByIdHandler(req: IRequestWithToken, res: Response) {
+  async deleteUserById(req: IRequestWithToken, res: Response) {
      if(!req.token) {
       return res.status(403).json({error: "Token de autorização inválido!"});
     }

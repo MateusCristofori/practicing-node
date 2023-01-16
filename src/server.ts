@@ -3,7 +3,8 @@ import dotenv from 'dotenv';
 import express from 'express';
 import 'express-async-errors';
 import { connect } from './connection/connectionDB';
-import privateRouter from './routes/AuthUserRoutes';
+import authUserRoutes from './routes/AuthUserRoutes';
+import newsRoutes from './routes/NewsRoutes';
 import publicRouter from './routes/publicRoutes';
 //express
 const app = express();
@@ -14,8 +15,9 @@ app.use(cors());
 //dotenv
 dotenv.config();
 // rotas
-app.use("/blog", publicRouter);
-app.use("/users", privateRouter);
+app.use(publicRouter);
+app.use(authUserRoutes);
+app.use(newsRoutes);
 //conexão com banco de dados principal
 connect();
 

@@ -9,18 +9,6 @@ import bcrypt from "bcrypt";
 import IBlackListToken from "../models/IBlackListToken";
 
 export default class UserController {
-  async getUserByIdHandler(req: Request, res: Response) {
-    const id = req.params.id;
-
-    const user = await User.findById({ _id: id }, '-password');
-
-    if(!user) {
-      return res.status(404).json({ error: "Usuário não encontrado!" });
-    }
-    
-    res.status(200).json({ user });
-  }
-
   async registerNewUserHandler(req: Request, res: Response) {
     const { name, email, password }: CreateUserDTO = req.body;
 
@@ -38,24 +26,6 @@ export default class UserController {
     
     await user.save();
     res.status(201).json({ user });
-  }
-  
-  async getAllNewsHandler(req: Request, res: Response) {
-    const news = await News.find({}, '-user_id');
-    
-    return res.status(200).json({ news });
-  }
-
-  async getNewsById(req: Request, res: Response) {
-    const id = req.params.id;
-
-    const news = await News.findById({ _id: id });
-
-    if(!news) {
-      return res.status(404).json({ error: "Notícia não encontrada!" });
-    }
-
-    res.status(200).json({ news });
   }
 
   async userLoginHandler(req: Request, res: Response) {

@@ -5,7 +5,7 @@ import News from "../models/News";
 import { CreateNewsValidation } from "../validations/Validations";
 
 export default class NewsController {
-  async getNewsHandler(req: IRequestWithToken, res: Response) {
+  async listNews(req: IRequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização autorização inválido!" });
     }
@@ -19,7 +19,7 @@ export default class NewsController {
     res.status(200).json({ news });
   }
 
-  async getNewsByIdHandler(req: IRequestWithToken, res: Response) {
+  async retrieveNews(req: IRequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido. "});
     }
@@ -35,7 +35,7 @@ export default class NewsController {
     return res.status(200).json({ news });
   }
 
-  async createNewsHandler(req: IRequestWithToken, res: Response) {
+  async createNews(req: IRequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -87,7 +87,7 @@ export default class NewsController {
     res.status(200).json({ news });
   }
 
-  async deleteNewsHandler(req: IRequestWithToken, res: Response) {
+  async deleteNews(req: IRequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido!" });
     }
