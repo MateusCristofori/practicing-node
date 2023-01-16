@@ -2,6 +2,7 @@ import { Response } from "express";
 import { CreateNewsDTO } from "../dtos/CreateNewsDTO";
 import { IRequestWithToken } from "../interfaces/IRequestWithToken";
 import News from "../models/News";
+import { CreateNewsValidation } from "../validations/Validations";
 
 export default class NewsController {
   async getNewsHandler(req: IRequestWithToken, res: Response) {
@@ -9,7 +10,7 @@ export default class NewsController {
       return res.status(403).json({ error: "Token de autorização autorização inválido!" });
     }
 
-    const news = await News.find({});
+    const news = await News.find({}, "-user_id");
     
     if(news.length == 0) {
       return res.status(400).json({ error: "Você ainda existe notícias cadastradas!" });
@@ -32,6 +33,31 @@ export default class NewsController {
     }
 
     return res.status(200).json({ news });
+  }
+
+  async createNewsHandler(req: IRequestWithToken, res: Response) {
+    if(!req.token) {
+      return res.status(403).json({ error: "Token de autorização inválido." });
+    }
+
+    const { title, subtitle, category, subject }: CreateNewsDTO = req.body;
+
+    CreateNewsValidation.checkTitle(title);
+    CreateNewsValidation.checkSubTitle(subtitle);
+    CreateNewsValidation.checkCategory(category);
+    CreateNewsValidation.checkSubject(subject);
+
+    const news = new News({
+      title,
+      subject,
+      category,
+      subtitle,
+      created_at: Date.now(),
+      user_id: req.token.user.id
+    });
+
+    await news.save();
+    return res.status(200).send({ news });
   }
 
   async updateNews(req: IRequestWithToken, res: Response) {

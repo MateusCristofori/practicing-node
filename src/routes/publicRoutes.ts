@@ -1,13 +1,17 @@
 import { Router } from "express";
-import { UserController } from "../controllers/userController";
+import UserController from "../controllers/userController";
 
 const publicRouter = Router();
 
-publicRouter.get('/', UserController.getAllUsersHandler);
-publicRouter.get('/user/:id', UserController.getUserByIdHandler);
-publicRouter.get('/news', UserController.getAllNewsHandler);
-publicRouter.get('/news/:id?', UserController.getNewsById);
-publicRouter.post('/register', UserController.registerNewUserHandler);
-publicRouter.post('/login', UserController.userLoginHandler);
+// ------ //
+const userController = new UserController();
+
+
+publicRouter.get('/', userController.getAllUsersHandler);
+publicRouter.get('/user/:id', userController.getUserByIdHandler);
+publicRouter.get('/news', userController.getAllNewsHandler);
+publicRouter.get('/news/:id?', userController.getNewsById);
+publicRouter.post('/register', userController.registerNewUserHandler);
+publicRouter.post('/login', userController.userLoginHandler);
 
 export default publicRouter;

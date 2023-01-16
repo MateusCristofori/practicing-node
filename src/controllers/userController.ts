@@ -8,14 +8,8 @@ import jwt from "jsonwebtoken";
 import bcrypt from "bcrypt";
 import IBlackListToken from "../models/IBlackListToken";
 
-export class UserController {
-  static getAllUsersHandler = async (req: Request, res: Response) => {
-    const users = await User.find({}, '-password');
-  
-    res.status(200).json({ users });
-  }
-
-  static getUserByIdHandler = async (req: Request, res: Response) => {
+export default class UserController {
+  async getUserByIdHandler(req: Request, res: Response) {
     const id = req.params.id;
 
     const user = await User.findById({ _id: id }, '-password');
@@ -27,7 +21,7 @@ export class UserController {
     res.status(200).json({ user });
   }
 
-  static registerNewUserHandler = async (req: Request, res: Response) => {
+  async registerNewUserHandler(req: Request, res: Response) {
     const { name, email, password }: CreateUserDTO = req.body;
 
     Validation.checkUserEmail(email);
@@ -46,13 +40,13 @@ export class UserController {
     res.status(201).json({ user });
   }
   
-  static getAllNewsHandler = async (req: Request, res: Response) => {
+  async getAllNewsHandler(req: Request, res: Response) {
     const news = await News.find({}, '-user_id');
     
     return res.status(200).json({ news });
   }
 
-  static getNewsById = async (req: Request, res: Response) => {
+  async getNewsById(req: Request, res: Response) {
     const id = req.params.id;
 
     const news = await News.findById({ _id: id });
@@ -64,7 +58,7 @@ export class UserController {
     res.status(200).json({ news });
   }
 
-  static userLoginHandler = async (req: Request, res: Response) => {
+  async userLoginHandler(req: Request, res: Response) {
     const { email, password }: CreateUserDTO = req.body;
   
     if(!email || !password) {
