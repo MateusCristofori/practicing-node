@@ -8,13 +8,14 @@ datasource db {
 }
 
 model User {
-  id       String @id @default(uuid())
-  name     String @unique
-  email    String @unique
-  password String
-  post     Post[]
-  news     News[]
-  role     Roles
+  id           String         @id @default(uuid())
+  name         String         @unique
+  email        String         @unique
+  password     String
+  post         Post[]
+  news         News[]
+  role         Roles
+  RecoverToken RecoverToken[]
 }
 
 model Post {
@@ -44,9 +45,17 @@ model News {
 }
 
 model BlackListToken {
-  id     String @id @default(uuid())
+  id     String  @id @default(uuid())
   token  String
   userId String?
+}
+
+model RecoverToken {
+  id     String  @id @default(uuid())
+  token  String
+  userId String
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+  used   Boolean
 }
 
 enum Roles {

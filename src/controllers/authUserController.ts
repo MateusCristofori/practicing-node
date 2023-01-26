@@ -1,10 +1,10 @@
 import { Response } from "express";
 import { db } from "../database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
-import { IRequestWithToken } from "../interfaces/IRequestWithToken";
+import { IRequestWithToken as RequestWithToken } from "../interfaces/IRequestWithToken";
 
 export default class AuthUserController {
-  async dashboard(req: IRequestWithToken, res: Response) {
+  async dashboard(req: RequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -27,7 +27,7 @@ export default class AuthUserController {
     return res.status(200).json({ userNews });
   }
 
-  async updateUser(req: IRequestWithToken, res: Response) {
+  async updateUser(req: RequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -50,7 +50,7 @@ export default class AuthUserController {
     return res.status(204).json({ updatedUser });
   }
 
-  async deleteUserById(req: IRequestWithToken, res: Response) {
+  async deleteUserById(req: RequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -65,8 +65,14 @@ export default class AuthUserController {
 
     return res.status(200).json({ deletedUser });
   }
+
+  async passwordRecover(req: RequestWithToken, res: Response) {
+    
+
+
+  }
   
-  async userLogout(req: IRequestWithToken, res: Response) {
+  async userLogout(req: RequestWithToken, res: Response) {
     const invalidToken = req.headers.authorization;
     const token = invalidToken && invalidToken.split(" ")[1];
 
