@@ -5,7 +5,6 @@ import { tokenValidation } from "../middlewares/token/tokenValidation";
 
 const newsRoutes = Router();
 newsRoutes.use(tokenValidation);
-newsRoutes.use(checkRoleIsAllowed);
 
 // ---------- //
 const newsController = new NewsController();
@@ -16,7 +15,7 @@ newsRoutes.route("/news/:id?")
 
   .get(newsController.retrieveNews)
 
-  .post(newsController.createNews)
+  .post(checkRoleIsAllowed, newsController.createNews)
 
   .put(newsController.updateNews)
 

@@ -1,9 +1,9 @@
 import { Roles } from "@prisma/client";
 import { NextFunction, Response } from "express";
 import { db } from "../database/prisma";
-import { IRequestWithToken } from "../interfaces/IRequestWithToken";
+import { RequestWithToken } from "../interfaces/RequestWithToken";
 
-export const checkRoleIsAllowed = async (req: IRequestWithToken, res: Response, next: NextFunction) => {
+export const checkRoleIsAllowed = async (req: RequestWithToken, res: Response, next: NextFunction) => {
   if (!req.token) {
     return res.status(403).json({ error: "Token de autorização inválido!" });
   }

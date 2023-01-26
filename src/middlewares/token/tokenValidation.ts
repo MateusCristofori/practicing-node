@@ -1,10 +1,10 @@
 import { NextFunction, Response } from "express";
 import jwt from 'jsonwebtoken';
 import { db } from "../../database/prisma";
-import { IJwtPayloadUserInfo } from "../../interfaces/IJwtPayloadUserInfo";
-import { IRequestWithToken } from "../../interfaces/IRequestWithToken";
+import { JwtPayloadUserInfo } from "../../interfaces/JwtPayloadUserInfo";
+import { RequestWithToken } from "../../interfaces/RequestWithToken";
 
-export const tokenValidation = async (req: IRequestWithToken, res: Response, next: NextFunction) => {
+export const tokenValidation = async (req: RequestWithToken, res: Response, next: NextFunction) => {
   const authToken = req.headers.authorization;
   const token = authToken && authToken.split(" ")[1];
   
@@ -24,7 +24,7 @@ export const tokenValidation = async (req: IRequestWithToken, res: Response, nex
     return res.status(403).json({ error: "Acesso restrito!" });
   }
 
-  req.token = (jwt.verify(token, secret)) as IJwtPayloadUserInfo;
+  req.token = (jwt.verify(token, secret)) as JwtPayloadUserInfo;
   
   next();
 }

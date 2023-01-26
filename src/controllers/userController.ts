@@ -19,7 +19,13 @@ export default class UserController {
       data: {
         name: content.name,
         email: content.email,
-        password: passwordHash
+        password: passwordHash,
+      },
+      select: {
+        id: true,
+        name: true,
+        email: true,
+        role: true
       }
     });
     

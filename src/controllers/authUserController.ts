@@ -1,7 +1,10 @@
 import { Response } from "express";
+import Mail from "nodemailer/lib/mailer";
 import { db } from "../database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
-import { IRequestWithToken as RequestWithToken } from "../interfaces/IRequestWithToken";
+import { createPasswordRecoverToken } from "../helpers/createPasswordRecoverToken/createPasswordRecoverToken";
+import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
+import { RequestWithToken } from "../interfaces/RequestWithToken";
 
 export default class AuthUserController {
   async dashboard(req: RequestWithToken, res: Response) {
@@ -67,9 +70,39 @@ export default class AuthUserController {
   }
 
   async passwordRecover(req: RequestWithToken, res: Response) {
+    if(!req.token) {
+      return res.status(403).json({ error: "token de autorização inválido."});
+    }
     
+    const { email } = req.body;
 
+    const user = await db.user.findFirst({
+      where: { email }
+    });
 
+    if(!user) {
+      return res.status(404).json({ error: "O email não existe! "});
+    }
+
+    const passwordRecoverToken = await createPasswordRecoverToken(user.id);
+
+    const { newPassword } = req.body;
+
+    const updatedUserPassword = await db.user.update({
+      where: { email },
+      data: {
+        password: await generatePasswordHash(newPassword)
+      }
+    });
+    
+    const invalidatedPasswordRecoverToken = await db.recoverToken.update({
+      where: { id: passwordRecoverToken.id },
+      data: {
+        used: true
+      }
+    });
+    
+    return res.status(400).json({ updatedUserPassword });
   }
   
   async userLogout(req: RequestWithToken, res: Response) {
@@ -86,6 +119,6 @@ export default class AuthUserController {
       }
     });
 
-    res.status(200).json({ msg: "Deslogado. Faça o processo de login novamente!" });
+    res.status(200).json({ msg: "Deslogado. Necessário logar novamente!" });
   }
 }

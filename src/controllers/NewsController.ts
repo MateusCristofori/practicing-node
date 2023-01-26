@@ -2,17 +2,17 @@ import { Response } from "express";
 import { db } from "../database/prisma";
 import { CreateNewsDTO } from "../dtos/CreateNewsDTO";
 import { createPost } from "../helpers/createPost/createPost";
-import { IRequestWithToken } from "../interfaces/IRequestWithToken";
+import { RequestWithToken } from "../interfaces/RequestWithToken";
 
 export default class NewsController {
-  async listNews(req: IRequestWithToken, res: Response) {
+  async listNews(req: RequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização autorização inválido!" });
     }
 
     const news = await db.news.findMany({
-      select: {
-        userId: false
+      include: {
+        post: true,
       }
     });
 
@@ -23,7 +23,7 @@ export default class NewsController {
     res.status(200).json({ news });
   }
 
-  async retrieveNews(req: IRequestWithToken, res: Response) {
+  async retrieveNews(req: RequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido. "});
     }
@@ -46,7 +46,7 @@ export default class NewsController {
     return res.status(200).json({ news });
   }
 
-  async createNews(req: IRequestWithToken, res: Response) {
+  async createNews(req: RequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -69,7 +69,7 @@ export default class NewsController {
     return res.status(200).send({ newNews });
   }
 
-  async updateNews(req: IRequestWithToken, res: Response) {
+  async updateNews(req: RequestWithToken, res: Response) {
     if(!req.token) {
       return res.status(403).json({ error: "Token de autorização invádlido. "});
     }
@@ -107,29 +107,32 @@ export default class NewsController {
 
     const { content } = req.body;
 
-
     const newPost = await db.post.update({
       where: {
         id: news.postId
       },
       data: {
         content
-      }
+      },
     });
 
     return res.status(204).json({ newPost });
   }
 
-  async deleteNews(req: IRequestWithToken, res: Response) {
+  async deleteNews(req: RequestWithToken, res: Response) {
     if(!req.token) {
-      return res.status(403).json({ error: "Token de autorização inválido!" });
+      return res.status(403).json({ error: "Token de autorização inválido. "});
     }
 
     const news_id = req.params.id;
+    const author_id = req.token.user.id;
 
     const news = await db.news.findFirst({
       where: {
         id: news_id
+      },
+      include: {
+        post: true
       }
     });
 
@@ -137,9 +140,19 @@ export default class NewsController {
       return res.status(404).json({ error: "Notícia não encontrada." });
     }
 
+    if(news.post.author_id != author_id) {
+      return res.status(403).json({ error: "Apenas o criador da notícia pode alterá-la "});
+    }
+    
     const deletedNews = await db.news.delete({
       where: {
         id: news_id
+      },
+    });
+    
+    const deletedPost = await db.post.delete({
+      where: {
+        id: deletedNews.postId
       }
     });
 

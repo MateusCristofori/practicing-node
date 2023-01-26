@@ -8,6 +8,7 @@ authUserRoutes.use(tokenValidation);
 // -------- //
 const authUserController = new AuthUserController();
 
+
 authUserRoutes.route("/dashboard")
 
   .get(authUserController.dashboard)
@@ -21,5 +22,9 @@ authUserRoutes.route("/users/:id?")
 authUserRoutes.route("/logout")
 
   .post(authUserController.userLogout)
+
+authUserRoutes.route("/recover")
+
+  .post(authUserController.passwordRecover)
 
 export default authUserRoutes;

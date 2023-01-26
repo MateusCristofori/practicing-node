@@ -14,7 +14,7 @@ model User {
   password     String
   post         Post[]
   news         News[]
-  role         Roles
+  role         Roles          @default(READER)
   RecoverToken RecoverToken[]
 }
 
