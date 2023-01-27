@@ -26,7 +26,7 @@ Observações:
 ### Login de usuários
 * Para o processo de login, acesse a rota ```http://localhost:8000/login``` passando o ```"email"``` e ```"password"``` cadastrados anteriormente.
 * O email para login precisa receber o símbolo de **arroba** para ser validado.
-* Após o processo de login, o usuário terá acesso as rotas privadas que necessitavam de login.
+* Após o processo de login, o usuário terá acesso as rotas privadas da aplicação.
 
 ## Rotas privadas
 * As rotas disponíveis após o processo de logIn são:
