@@ -28,5 +28,5 @@ Observações:
 * Após o processo de login, o usuário terá acesso as rotas privadas que necessitavam de login.
 * As rotas disponíveis após o processo de logIn são:
   * ```/dashboard``` Para o usuário ter acesso as suas notícias cadastradas, caso tenha permissão para isso.
-  * ```/logout``` Para o usuário conseguir realizar o processo de logOut da aplicação. Após esse processo, seu Token de autenticação será invalidado e precisará realizar novamente o logIn.
+  * ```/logout``` Para o usuário conseguir realizar o processo de logout da aplicação. Após esse processo, seu Token de autenticação será invalidado e precisará realizar novamente o login.
   * ```/recover``` onde o usuário poderá trocar/recuperar a senha. Será gerado um Token válido para realizar a recuperação de senha. Após o processo ser finalizado, esse Token será invalidado e precisará realizar novamente todo o processo de recuperação.
