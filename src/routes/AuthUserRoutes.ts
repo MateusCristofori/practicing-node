@@ -1,5 +1,6 @@
 import Router from 'express';
 import AuthUserController from '../controllers/authUserController';
+import { createPasswordRecoverToken } from '../helpers/createPasswordRecoverToken/createPasswordRecoverToken';
 import { tokenValidation } from '../middlewares/token/tokenValidation';
 
 const authUserRoutes = Router();
@@ -23,8 +24,10 @@ authUserRoutes.route("/logout")
 
   .post(authUserController.userLogout)
 
-authUserRoutes.route("/recover")
+authUserRoutes.route("/recover/:token?")
 
-  .post(authUserController.passwordRecover)
+  .post(createPasswordRecoverToken)
+
+  .put(authUserController.passwordRecover)
 
 export default authUserRoutes;

@@ -1,5 +1,5 @@
 import { Response } from "express";
-import Mail from "nodemailer/lib/mailer";
+import { json } from "stream/consumers";
 import { db } from "../database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import { createPasswordRecoverToken } from "../helpers/createPasswordRecoverToken/createPasswordRecoverToken";
@@ -73,36 +73,48 @@ export default class AuthUserController {
     if(!req.token) {
       return res.status(403).json({ error: "token de autorização inválido."});
     }
-    
-    const { email } = req.body;
+  
+    const recoverToken = req.params.token;
 
-    const user = await db.user.findFirst({
-      where: { email }
-    });
-
-    if(!user) {
-      return res.status(404).json({ error: "O email não existe! "});
+    if(!recoverToken) {
+      return res.status(400).json({ error: "Token de recuperação inválido." });
     }
 
-    const passwordRecoverToken = await createPasswordRecoverToken(user.id);
+    const token = await db.recoverToken.findFirst({
+      where: {
+        token: recoverToken
+      }
+    });
+
+    if(!token) {
+      return res.status(400).json({ error: "Token de recuperação não encontrado. Tente novamente." });
+    }
+
+    if(!token.used == false) {
+      return res.status(400).json({ error: "Este token de recuperação já foi utilizado! Tente novamente." });
+    }
 
     const { newPassword } = req.body;
 
-    const updatedUserPassword = await db.user.update({
-      where: { email },
+    const updatedUser = await db.user.update({
+      where: {
+        id: token.userId!
+      },
       data: {
         password: await generatePasswordHash(newPassword)
       }
     });
-    
-    const invalidatedPasswordRecoverToken = await db.recoverToken.update({
-      where: { id: passwordRecoverToken.id },
+
+    const invalidToken = await db.recoverToken.update({
+      where: {
+        id: token.id
+      },
       data: {
         used: true
       }
     });
-    
-    return res.status(400).json({ updatedUserPassword });
+
+    return res.status(200).json({ updatedUser });
   }
   
   async userLogout(req: RequestWithToken, res: Response) {
