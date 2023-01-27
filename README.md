@@ -25,7 +25,10 @@ Observações:
 
 ### Login de usuários
 * Para o processo de login, acesse a rota ```http://localhost:8000/login``` passando o ```"email"``` e ```"password"``` cadastrados anteriormente.
+* O email para login precisa receber o símbolo de **arroba** para ser validado.
 * Após o processo de login, o usuário terá acesso as rotas privadas que necessitavam de login.
+
+## Rotas privadas
 * As rotas disponíveis após o processo de logIn são:
   * ```/dashboard``` Para o usuário ter acesso as suas notícias cadastradas, caso tenha permissão para isso.
   * ```/logout``` Para o usuário conseguir realizar o processo de logout da aplicação. Após esse processo, seu Token de autenticação será invalidado e precisará realizar novamente o login.
