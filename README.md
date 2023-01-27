@@ -25,5 +25,6 @@ Observações:
 
 ### Login de usuários
 * Para o processo de login, acesse a rota ```http://localhost:8000/login``` passando o ```"email"``` e ```"password"``` cadastrados anteriormente.
-* Após o processo de login, o usuário terá acesso as rotas privadas que necessitavam de login. 
-* As rotas disponíveis são: ```/dashboard```, onde poderemos ter acesso à todas as notícias do usuário logado, e ```/logout``` onde realizará o processo de logout do usuário e irá invalidar o token usado pelo mesmo, fazendo necessário realizar o processo de login novamente., 
+* Após o processo de login, o usuário terá acesso as rotas privadas que necessitavam de login.
+* As rotas disponíveis após o processo de logIn são:
+  * teste
