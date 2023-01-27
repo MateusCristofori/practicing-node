@@ -1,4 +1,4 @@
-# API Blog.
+# API Node.Js.
 API feita em **Node.Js**, **JWT** e **MySQL** para autenticações e autorizações com base em roles (permissões) dos usuários.
 
 # Instalação e executação do projeto
