@@ -3,6 +3,7 @@ import { Response } from "express";
 import { db } from "../database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
+import PasswordRecoverToken from "../helpers/passwordRecover/PasswordRecoverToken";
 import { RequestWithToken } from "../interfaces/RequestWithToken";
 
 export default class AuthUserController {
@@ -74,6 +75,10 @@ export default class AuthUserController {
     }
     
     const { email } = req.body;
+    
+    if(!email) {
+      return res.status(400).json({ error: "É necessário que o usuário passe o e-mail para a recuperação de senha!" });
+    }
 
     const user = await db.user.findFirst({
       where: {
@@ -89,16 +94,14 @@ export default class AuthUserController {
       return res.status(403).json({ error: "Não é permitido mudar a senha de outro usuário." });
     }
 
-    const passwordToken = await db.recoverToken.create({
-      data: {
-        userId: user.id,
-        token: randomUUID(),
-        used: false        
-      }
-    });
+    // abstração de criação de token de recuperação.
+    const passwordToken = await PasswordRecoverToken.createPasswordRecoverToken(user.id);
 
-    const token = passwordToken.token;
-    return res.json({ token });
+    if(!passwordToken) {
+      return res.status(400).json({ error: "Ocorreu um erro durante a criação do token de recuperação de senha." });
+    }
+
+    return res.json({ passwordToken });
   }
 
   async changePassword(req: RequestWithToken, res: Response) {
@@ -108,31 +111,21 @@ export default class AuthUserController {
 
     const { newPassword } = req.body;
 
-    const checkUserPassword = await db.user.findFirst({
-      where: {
-        id: req.token.user.id,
-        password: newPassword
-      }
-    });
-
-    if(checkUserPassword) {
-      return res.status(400).json({ error: "As senhas não podem ser iguais." });
+    if(!newPassword) {
+      return res.status(400).json({ error: "A nova senha não pode ser vazia!" });
     }
 
     const token = req.params.token;
 
-    const existsPasswordToken = await db.recoverToken.findFirst({
-      where: {
-        token: token
-      }
-    });
+    // Abstração de query de procura de token.
+    const passwordToken = await PasswordRecoverToken.findPasswordToken(token);
 
-    if(!existsPasswordToken) {
-      return res.status(404).json({ error: "Token de recuperação não encontrado." });
+    if(!passwordToken.passwordToken) {
+      return res.status(400).json({ error: "Token de recuperação de senha não encontrado." });
     }
 
-    if(existsPasswordToken.used) {
-      return res.status(403).json({ error: "Token de recuperação inválido para uso." });
+    if(passwordToken.passwordToken.used) {
+      return res.status(400).json({ error: "Token de recuperação já usado." });
     }
 
     const user = await db.user.update({
@@ -143,6 +136,9 @@ export default class AuthUserController {
         password: await generatePasswordHash(newPassword),
       }
     });
+
+    // Abstração de invalidação de token usado.
+    PasswordRecoverToken.invalidateToken(passwordToken.passwordToken.id);
 
     return res.status(200).json({ user });
   }
