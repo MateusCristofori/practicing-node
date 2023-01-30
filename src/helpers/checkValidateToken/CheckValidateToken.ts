@@ -5,8 +5,12 @@ class CheckValidationToken {
     const invalidToken = await db.blackListToken.findFirst({
       where: {
         token
-      }
+      },
     });
+
+    if(invalidToken?.token) {
+      return { error: "Token inválido." }
+    }
 
     return {
       invalidToken

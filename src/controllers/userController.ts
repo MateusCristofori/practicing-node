@@ -68,10 +68,6 @@ export default class UserController {
     });
     
    const isValidToken = CheckValidateToken.isTokenValid(token);
-  
-    if(!isValidToken) {
-      return res.status(403).json({ error: "Token inválido. "});
-    }
 
     res.status(200).json({
       auth: true,
