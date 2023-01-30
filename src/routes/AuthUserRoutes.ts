@@ -1,6 +1,5 @@
 import Router from 'express';
 import AuthUserController from '../controllers/authUserController';
-import { createPasswordRecoverToken } from '../helpers/createPasswordRecoverToken/createPasswordRecoverToken';
 import { tokenValidation } from '../middlewares/token/tokenValidation';
 
 const authUserRoutes = Router();
@@ -8,7 +7,6 @@ authUserRoutes.use(tokenValidation);
 
 // -------- //
 const authUserController = new AuthUserController();
-
 
 authUserRoutes.route("/dashboard")
 
@@ -26,8 +24,8 @@ authUserRoutes.route("/logout")
 
 authUserRoutes.route("/recover/:token?")
 
-  .post(createPasswordRecoverToken)
+  .post(authUserController.passwordRecover)
 
-  .put(authUserController.passwordRecover)
+  .put(authUserController.changePassword)
 
 export default authUserRoutes;

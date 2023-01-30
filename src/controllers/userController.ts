@@ -18,22 +18,14 @@ export default class UserController {
       return res.status(400).json({ error: "Deve-se passar o e-mail e senha!" });
     }
 
-    const passwordHash = await generatePasswordHash(content.password);
-
     const newUser = await db.user.create({
       data: {
         name: content.name,
         email: content.email,
-        password: passwordHash,
+        password: await generatePasswordHash(content.password),
       },
-      select: {
-        id: true,
-        name: true,
-        email: true,
-        role: true
-      }
     });
-    
+   
     return res.status(201).json({ newUser });
   }
 

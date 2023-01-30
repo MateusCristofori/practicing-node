@@ -20,5 +20,5 @@ app.use(newsRoutes);
 //conexão com banco de dados principal
 
 app.listen(8000, () => {
-  console.log("Servidor rodando na porta http://localhost:8000")
+  console.log("Servidor rodando -> http://localhost:8000")
 });

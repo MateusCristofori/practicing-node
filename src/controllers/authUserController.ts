@@ -1,8 +1,7 @@
+import { randomUUID } from "crypto";
 import { Response } from "express";
-import { json } from "stream/consumers";
 import { db } from "../database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
-import { createPasswordRecoverToken } from "../helpers/createPasswordRecoverToken/createPasswordRecoverToken";
 import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
 import { RequestWithToken } from "../interfaces/RequestWithToken";
 
@@ -44,9 +43,9 @@ export default class AuthUserController {
         id: user_id
       },
       data: {
-        name: content?.name,
-        email: content?.email,
-        password: content?.password
+        name: content.name,
+        email: content.email,
+        password: content.password
       }
     });
 
@@ -71,52 +70,83 @@ export default class AuthUserController {
 
   async passwordRecover(req: RequestWithToken, res: Response) {
     if(!req.token) {
-      return res.status(403).json({ error: "token de autorização inválido."});
+      return res.status(403).json({ error: "Token de autorização inválido." });
     }
-  
-    const recoverToken = req.params.token;
+    
+    const { email } = req.body;
 
-    if(!recoverToken) {
-      return res.status(400).json({ error: "Token de recuperação inválido." });
-    }
-
-    const token = await db.recoverToken.findFirst({
+    const user = await db.user.findFirst({
       where: {
-        token: recoverToken
+        email
       }
     });
 
-    if(!token) {
-      return res.status(400).json({ error: "Token de recuperação não encontrado. Tente novamente." });
+    if(!user) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    if(!token.used == false) {
-      return res.status(400).json({ error: "Este token de recuperação já foi utilizado! Tente novamente." });
+    if(user.email != req.token.user.email) {
+      return res.status(403).json({ error: "Não é permitido mudar a senha de outro usuário." });
+    }
+
+    const passwordToken = await db.recoverToken.create({
+      data: {
+        userId: user.id,
+        token: randomUUID(),
+        used: false        
+      }
+    });
+
+    const token = passwordToken.token;
+    return res.json({ token });
+  }
+
+  async changePassword(req: RequestWithToken, res: Response) {
+    if(!req.token) {
+      return res.status(403).json({ error: "token de autorização inválido."});
     }
 
     const { newPassword } = req.body;
 
-    const updatedUser = await db.user.update({
+    const checkUserPassword = await db.user.findFirst({
       where: {
-        id: token.userId!
-      },
-      data: {
-        password: await generatePasswordHash(newPassword)
+        id: req.token.user.id,
+        password: newPassword
       }
     });
 
-    const invalidToken = await db.recoverToken.update({
+    if(checkUserPassword) {
+      return res.status(400).json({ error: "As senhas não podem ser iguais." });
+    }
+
+    const token = req.params.token;
+
+    const existsPasswordToken = await db.recoverToken.findFirst({
       where: {
-        id: token.id
-      },
-      data: {
-        used: true
+        token: token
       }
     });
 
-    return res.status(200).json({ updatedUser });
+    if(!existsPasswordToken) {
+      return res.status(404).json({ error: "Token de recuperação não encontrado." });
+    }
+
+    if(existsPasswordToken.used) {
+      return res.status(403).json({ error: "Token de recuperação inválido para uso." });
+    }
+
+    const user = await db.user.update({
+      where: {
+        id: req.token.user.id
+      },
+      data: {
+        password: await generatePasswordHash(newPassword),
+      }
+    });
+
+    return res.status(200).json({ user });
   }
-  
+
   async userLogout(req: RequestWithToken, res: Response) {
     const invalidToken = req.headers.authorization;
     const token = invalidToken && invalidToken.split(" ")[1];
