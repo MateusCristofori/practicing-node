@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { db } from "../database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import UserLoginDTO from "../dtos/UserLoginDTO";
+import CheckValidateToken from "../helpers/checkValidateToken/CheckValidateToken";
 import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
 
 export default class UserController {
@@ -66,14 +67,12 @@ export default class UserController {
       expiresIn: "1d"
     });
     
-    const checkValidationToken = await db.blackListToken.findFirst({
-      where: { token }
-    })
+   const isValidToken = CheckValidateToken.isTokenValid(token);
   
-    if(checkValidationToken) {
-      return res.status(403).json({ error: "Token inválido!" });
+    if(!isValidToken) {
+      return res.status(403).json({ error: "Token inválido. "});
     }
-  
+
     res.status(200).json({
       auth: true,
       user: {

@@ -106,7 +106,7 @@ export default class AuthUserController {
 
   async changePassword(req: RequestWithToken, res: Response) {
     if(!req.token) {
-      return res.status(403).json({ error: "token de autorização inválido."});
+      return res.status(403).json({ error: "Token de autorização inválido."});
     }
 
     const { newPassword } = req.body;
@@ -143,20 +143,25 @@ export default class AuthUserController {
     return res.status(200).json({ user });
   }
 
+  // Resolver bug de invalidação de token. Aparentemente o método está capturando apenas metade do token usado.
   async userLogout(req: RequestWithToken, res: Response) {
-    const invalidToken = req.headers.authorization;
-    const token = invalidToken && invalidToken.split(" ")[1];
+    if(!req.token) {
+      return res.status(403).json({ error: "Token de autorização inválido." });
+    }
+
+    const bearerToken = req.headers.authorization;
+    const token = bearerToken && bearerToken.split(" ")[1];
 
     if(!token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
 
-    const blackToken = await db.blackListToken.create({
+    const invalidToken = await db.blackListToken.create({
       data: {
         token
       }
     });
 
-    res.status(200).json({ msg: "Deslogado. Necessário logar novamente!" });
+    res.status(200).json({ msg: "Deslogado. Necessário logar novamente!" , invalidToken });
   }
 }
