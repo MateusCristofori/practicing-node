@@ -9,7 +9,8 @@ newsRoutes.use(tokenValidation);
 // ---------- //
 const newsController = new NewsController();
 
-newsRoutes.route("/news/:id?")
+newsRoutes
+  .route("/news/:id?")
 
   .get(newsController.listNews)
 

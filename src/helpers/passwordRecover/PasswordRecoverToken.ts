@@ -1,21 +1,22 @@
 import { randomUUID } from "crypto";
 import { db } from "../../database/prisma";
 
+// Classe para abstração de funções.
 class PasswordRecoverToken {
   async findPasswordToken(token: string) {
     const passwordToken = await db.recoverToken.findFirst({
       where: {
-        token
+        token,
       },
       select: {
         id: true,
-        used: true
-      }
+        used: true,
+      },
     });
 
     return {
-      passwordToken
-    }
+      passwordToken,
+    };
   }
 
   async createPasswordRecoverToken(userId: string) {
@@ -23,27 +24,27 @@ class PasswordRecoverToken {
       data: {
         userId,
         token: randomUUID(),
-        used: false
+        used: false,
       },
       select: {
-        token: true
-      }
+        token: true,
+      },
     });
-    const token = passwordRecoverToken.token;
-    
+    const token: string = passwordRecoverToken.token;
+
     return {
-      token
-    }
+      token,
+    };
   }
 
   async invalidateToken(id: string) {
     const invalidatePasswordToken = await db.recoverToken.update({
       where: {
-        id
+        id,
       },
       data: {
-        used: true
-      }
+        used: true,
+      },
     });
 
     return true;

@@ -1,6 +1,6 @@
-import Router from 'express';
-import AuthUserController from '../controllers/authUserController';
-import { tokenValidation } from '../middlewares/token/tokenValidation';
+import Router from "express";
+import AuthUserController from "../controllers/AuthUserController";
+import { tokenValidation } from "../middlewares/token/tokenValidation";
 
 const authUserRoutes = Router();
 authUserRoutes.use(tokenValidation);
@@ -8,24 +8,28 @@ authUserRoutes.use(tokenValidation);
 // -------- //
 const authUserController = new AuthUserController();
 
-authUserRoutes.route("/dashboard")
+authUserRoutes
+  .route("/dashboard")
 
-  .get(authUserController.dashboard)
+  .get(authUserController.dashboard);
 
-authUserRoutes.route("/users/:id?")
+authUserRoutes
+  .route("/users/:id?")
 
   .put(authUserController.updateUser)
 
-  .delete(authUserController.deleteUserById)
+  .delete(authUserController.deleteUserById);
 
-authUserRoutes.route("/logout")
+authUserRoutes
+  .route("/logout")
 
-  .post(authUserController.userLogout)
+  .post(authUserController.userLogout);
 
-authUserRoutes.route("/recover/:token?")
+authUserRoutes
+  .route("/recover/:token?")
 
   .post(authUserController.passwordRecover)
 
-  .put(authUserController.changePassword)
+  .put(authUserController.changePassword);
 
 export default authUserRoutes;
