@@ -2,7 +2,6 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import "express-async-errors";
-import email from "./mail/email";
 import authUserRoutes from "./routes/AuthUserRoutes";
 import newsRoutes from "./routes/NewsRoutes";
 import publicRouter from "./routes/publicRoutes";

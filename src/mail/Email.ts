@@ -15,13 +15,18 @@ class Email {
 
   createEmailStructure(
     transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>,
-    passwordToken: string
+    passwordTokenURL: string
   ) {
     transporter.sendMail({
       from: process.env.USER_EMAIL,
       to: process.env.USER_EMAIL_TO,
       subject: "Recuperação de senha",
-      text: passwordToken,
+      html: `
+        <div>
+          <button>
+            <a href="${passwordTokenURL}">Clique aqui para trocar de senha.</a>
+          </button>
+        </div>`,
     });
   }
 

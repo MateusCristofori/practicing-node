@@ -4,7 +4,7 @@ import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
 import PasswordRecoverToken from "../helpers/passwordRecover/PasswordRecoverToken";
 import { RequestWithToken } from "../interfaces/RequestWithToken";
-import Email from "../mail/email";
+import Email from "../mail/Email";
 
 export default class AuthUserController {
   async dashboard(req: RequestWithToken, res: Response) {
@@ -112,9 +112,8 @@ export default class AuthUserController {
       });
     }
     const passwordTokenURL = `${process.env.URL_CHANGE_PASSWORD}/${passwordObject.token}`;
-
     new Email().sendEmail(passwordTokenURL);
-
+    console.log("Email enviado");
     return res.status(200).send();
   }
 
@@ -177,6 +176,7 @@ export default class AuthUserController {
     const invalidToken = await db.blackListToken.create({
       data: {
         token,
+        userId: req.token.user.id,
       },
     });
 

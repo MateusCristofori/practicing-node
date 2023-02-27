@@ -4,17 +4,15 @@ class CheckValidationToken {
   async isTokenValid(token: string) {
     const invalidToken = await db.blackListToken.findFirst({
       where: {
-        token
+        token,
       },
     });
 
-    if(invalidToken?.token) {
-      return { error: "Token inválido." }
+    if (invalidToken?.token) {
+      return true;
     }
 
-    return {
-      invalidToken
-    }
+    return false;
   }
 }
 
