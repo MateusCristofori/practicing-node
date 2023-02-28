@@ -16,4 +16,11 @@ publicRouter
 
   .post(userController.userLoginHandler);
 
+publicRouter
+  .route("/recover/:token?")
+
+  .post(userController.passwordRecover)
+
+  .put(userController.changePassword);
+
 export default publicRouter;

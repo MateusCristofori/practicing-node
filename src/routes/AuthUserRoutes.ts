@@ -25,11 +25,4 @@ authUserRoutes
 
   .post(authUserController.userLogout);
 
-authUserRoutes
-  .route("/recover/:token?")
-
-  .post(authUserController.passwordRecover)
-
-  .put(authUserController.changePassword);
-
 export default authUserRoutes;

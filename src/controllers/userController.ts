@@ -6,6 +6,8 @@ import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import UserLoginDTO from "../dtos/UserLoginDTO";
 import CheckValidateToken from "../helpers/checkValidateToken/CheckValidateToken";
 import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
+import PasswordRecoverToken from "../helpers/passwordRecover/PasswordRecoverToken";
+import Email from "../mail/Email";
 
 export default class UserController {
   async registerNewUserHandler(req: Request, res: Response) {
@@ -92,5 +94,75 @@ export default class UserController {
       },
       token,
     });
+  }
+
+  async passwordRecover(req: Request, res: Response) {
+    const { email } = req.body;
+
+    if (!email) {
+      return res.status(400).json({
+        error:
+          "É necessário que o usuário passe o e-mail para a recuperação de senha!",
+      });
+    }
+
+    const user = await db.user.findFirst({
+      where: {
+        email,
+      },
+    });
+
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado." });
+    }
+
+    // abstração de criação de token de recuperação.
+    const passwordObject =
+      await PasswordRecoverToken.createPasswordRecoverToken(user.id);
+
+    const passwordTokenURL = `${process.env.URL_CHANGE_PASSWORD}/${passwordObject.token}`;
+
+    new Email().sendEmail(passwordTokenURL);
+
+    return res.status(200).send();
+  }
+
+  async changePassword(req: Request, res: Response) {
+    const { newPassword } = req.body;
+
+    if (!newPassword) {
+      return res
+        .status(400)
+        .json({ error: "A nova senha não pode ser vazia!" });
+    }
+
+    const token = req.params.token;
+
+    // Checagem de validação de token de recuperação de senha.
+    const passwordToken = await PasswordRecoverToken.findPasswordToken(token);
+
+    if (!passwordToken.passwordToken) {
+      return res
+        .status(400)
+        .json({ error: "Token de recuperação de senha não encontrado." });
+    }
+
+    if (passwordToken.passwordToken.used) {
+      return res.status(400).json({ error: "Token de recuperação já usado." });
+    }
+
+    const user = await db.user.update({
+      where: {
+        id: passwordToken.passwordToken.userId,
+      },
+      data: {
+        password: await generatePasswordHash(newPassword),
+      },
+    });
+
+    // Abstração de invalidação de token usado.
+    PasswordRecoverToken.invalidateToken(passwordToken.passwordToken.id);
+
+    return res.status(200).json({ user });
   }
 }

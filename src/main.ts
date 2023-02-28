@@ -9,8 +9,9 @@ import publicRouter from "./routes/publicRoutes";
 const app = express();
 //json
 app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 //cors
-app.use(cors());
+app.use(cors({ credentials: true, origin: "http://localhost:3000" }));
 //dotenv
 dotenv.config();
 // rotas

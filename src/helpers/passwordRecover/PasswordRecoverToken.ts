@@ -11,6 +11,7 @@ class PasswordRecoverToken {
       select: {
         id: true,
         used: true,
+        userId: true,
       },
     });
 
