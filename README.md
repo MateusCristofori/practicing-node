@@ -23,7 +23,7 @@ Observações:
 * Pode-se utilizar qualquer email durante o processo de cadastro de usuário. Mesmo que o email não exista como por exemplo: ```teste@teste.com```.
 * Caso o usuário tente enviar uma requisição com os campos vazios, um erro será disparado na pilha de execução do projeto, a ação será invalidada e uma mensagem de erro será retornada.
 
-### Login de usuários
+### Login de usuários e recuperação de senha
 * Para o processo de login, acesse a rota ```http://localhost:8000/login``` passando o ```"email"``` e ```"password"``` cadastrados anteriormente.
 * O email para login precisa receber o símbolo de **arroba** para ser validado.
 * Após o processo de login, o usuário terá acesso as rotas privadas da aplicação.
