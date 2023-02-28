@@ -20,7 +20,7 @@ Observações:
 ### Criar usuário manualmente
 * Para se criar um novo usuário na aplicação, acesse http://localhost:8000/register.
 * Preencha os dados em um client com os atributos (```"name", "email", "password"```). O padrão de criação de usuário sempre será como a ```"role"``` sendo ```"reader"``` que representa o nível mais baixo de permissão.
-* Pode-se utilizar qualquer email durante o processo de cadastro de usuário. Mesmo que o email não exista como por exemplo: ```teste@teste.com```.
+* É recomendado o uso de e-mail existente para não acarretar em problemas no processo de recuperação de senha.
 * Caso o usuário tente enviar uma requisição com os campos vazios, um erro será disparado na pilha de execução do projeto, a ação será invalidada e uma mensagem de erro será retornada.
 
 ### Login de usuários e recuperação de senha
