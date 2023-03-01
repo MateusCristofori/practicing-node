@@ -6,7 +6,7 @@ import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import UserLoginDTO from "../dtos/UserLoginDTO";
 import CheckValidateToken from "../helpers/checkValidateToken/CheckValidateToken";
 import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
-import PasswordRecoverToken from "../helpers/passwordRecover/PasswordRecoverToken";
+import ActionToken from "../helpers/passwordRecover/ActionToken";
 import Email from "../mail/Email";
 
 export default class UserController {
@@ -117,12 +117,15 @@ export default class UserController {
     }
 
     // abstração de criação de token de recuperação.
-    const passwordObject =
-      await PasswordRecoverToken.createPasswordRecoverToken(user.id);
+    const passwordObject = await ActionToken.createActionToken(user.id);
 
     const passwordTokenURL = `${process.env.URL_CHANGE_PASSWORD}/${passwordObject.token}`;
 
-    new Email().sendEmail(passwordTokenURL);
+    new Email().sendEmail(
+      passwordTokenURL,
+      "Recuperação de senha",
+      "Clique para recuperar sua senha."
+    );
 
     return res.status(200).send();
   }
@@ -139,21 +142,21 @@ export default class UserController {
     const token = req.params.token;
 
     // Checagem de validação de token de recuperação de senha.
-    const passwordToken = await PasswordRecoverToken.findPasswordToken(token);
+    const passwordToken = await ActionToken.findActionToken(token);
 
-    if (!passwordToken.passwordToken) {
+    if (!passwordToken.actionToken) {
       return res
         .status(400)
         .json({ error: "Token de recuperação de senha não encontrado." });
     }
 
-    if (passwordToken.passwordToken.used) {
+    if (passwordToken.actionToken.used) {
       return res.status(400).json({ error: "Token de recuperação já usado." });
     }
 
     const user = await db.user.update({
       where: {
-        id: passwordToken.passwordToken.userId,
+        id: passwordToken.actionToken.userId,
       },
       data: {
         password: await generatePasswordHash(newPassword),
@@ -161,7 +164,7 @@ export default class UserController {
     });
 
     // Abstração de invalidação de token usado.
-    PasswordRecoverToken.invalidateToken(passwordToken.passwordToken.id);
+    ActionToken.invalidateActionToken(passwordToken.actionToken.id);
 
     return res.status(200).json({ user });
   }

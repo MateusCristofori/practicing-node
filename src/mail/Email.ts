@@ -15,24 +15,26 @@ class Email {
 
   createEmailStructure(
     transporter: nodemailer.Transporter<SMTPTransport.SentMessageInfo>,
-    passwordTokenURL: string
+    actionToken: string,
+    subject: string,
+    infoText: string
   ) {
     transporter.sendMail({
       from: process.env.USER_EMAIL,
       to: process.env.USER_EMAIL_TO,
-      subject: "Recuperação de senha",
+      subject: subject,
       html: `
         <div>
           <button>
-            <a href="${passwordTokenURL}">Clique aqui para trocar de senha.</a>
+            <a href="${actionToken}">${infoText}</a>
           </button>
         </div>`,
     });
   }
 
-  sendEmail(passwordTokenURL: string) {
+  sendEmail(actionToken: string, subject: string, infoText: string) {
     const transporter = this.createTransport();
-    this.createEmailStructure(transporter, passwordTokenURL);
+    this.createEmailStructure(transporter, actionToken, subject, infoText);
   }
 }
 

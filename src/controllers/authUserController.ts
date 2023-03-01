@@ -1,8 +1,7 @@
 import { Response } from "express";
 import { db } from "../database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
-import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
-import PasswordRecoverToken from "../helpers/passwordRecover/PasswordRecoverToken";
+import ActionToken from "../helpers/passwordRecover/ActionToken";
 import { RequestWithToken } from "../interfaces/RequestWithToken";
 import Email from "../mail/Email";
 
@@ -55,20 +54,63 @@ export default class AuthUserController {
     return res.status(204).json({ updatedUser });
   }
 
-  async deleteUserById(req: RequestWithToken, res: Response) {
+  async deleteUserByEmail(req: RequestWithToken, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
 
-    const user_id = req.token.user.id;
+    const { email } = req.body;
 
-    const deletedUser = await db.user.delete({
+    const user = await db.user.findFirst({
       where: {
-        id: user_id,
+        email,
       },
     });
 
-    return res.status(200).json({ deletedUser });
+    if (!user) {
+      return res.status(404).json({ error: "Usuário não encontrado" });
+    }
+
+    const deleteUserToken = await ActionToken.createActionToken(user.id);
+    const deleteUserURL = `${process.env.URL_DELETE_USER}/${deleteUserToken.token}`;
+
+    new Email().sendEmail(
+      deleteUserURL,
+      "Deleção de usuário",
+      "Clique para deletar seu perfil."
+    );
+
+    return res.status(200).send();
+  }
+
+  async deletedUser(req: RequestWithToken, res: Response) {
+    if (!req.token) {
+      return res.status(403).json({ error: "Token de autorização inválido." });
+    }
+
+    const token = req.params.token;
+
+    const findToken = await ActionToken.findActionToken(token);
+
+    if (!findToken) {
+      return res
+        .status(404)
+        .json({ error: "Token de recuperação não encontrado." });
+    }
+
+    if (findToken.actionToken?.used) {
+      return res.status(400).json({ error: "Token já utilizado." });
+    }
+
+    await db.user.delete({
+      where: {
+        id: req.token.user.id,
+      },
+    });
+
+    await ActionToken.invalidateActionToken(token);
+
+    return res.status(200).json({ msg: "Usuário deletado." });
   }
 
   // Resolver bug de invalidação de token. Aparentemente o método está capturando apenas metade do token usado.
@@ -91,8 +133,6 @@ export default class AuthUserController {
       },
     });
 
-    res
-      .status(200)
-      .json({ msg: "Deslogado. Necessário logar novamente!", invalidToken });
+    res.status(200).json({ msg: "Deslogado.", invalidToken });
   }
 }

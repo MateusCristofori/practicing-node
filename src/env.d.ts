@@ -7,6 +7,7 @@ declare global {
       APP_PASSWORD_EMAIL: string;
       USER_EMAIL_TO: string;
       URL_CHANGE_PASSWORD: string;
+      URL_DELETE_USER: string;
     }
   }
 }

@@ -14,11 +14,11 @@ authUserRoutes
   .get(authUserController.dashboard);
 
 authUserRoutes
-  .route("/users/:id?")
+  .route("/users/:token?")
 
   .put(authUserController.updateUser)
 
-  .delete(authUserController.deleteUserById);
+  .delete(authUserController.deleteUserByEmail);
 
 authUserRoutes
   .route("/logout")
