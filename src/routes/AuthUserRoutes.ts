@@ -9,18 +9,27 @@ authUserRoutes.use(tokenValidation);
 const authUserController = new AuthUserController();
 
 authUserRoutes
+
   .route("/dashboard")
 
   .get(authUserController.dashboard);
 
 authUserRoutes
+
   .route("/users/:token?")
 
-  .put(authUserController.updateUser)
-
-  .delete(authUserController.deleteUserByEmail);
+  .put(authUserController.updateUser);
 
 authUserRoutes
+
+  .route("/delete/:token?")
+
+  .post(authUserController.deleteUserByEmail)
+
+  .delete(authUserController.deletedUser);
+
+authUserRoutes
+
   .route("/logout")
 
   .post(authUserController.userLogout);

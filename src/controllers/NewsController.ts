@@ -160,7 +160,7 @@ export default class NewsController {
       },
     });
 
-    const deletedPost = await db.post.delete({
+    await db.post.delete({
       where: {
         id: deletedNews.postId,
       },
