@@ -31,8 +31,9 @@ Observações:
 
 ## Rotas privadas
 As rotas disponíveis após o processo de login são:
-  * ```/dashboard``` Para o usuário ter acesso as suas notícias cadastradas, caso tenha permissão para isso.
+  * Para ter acesso a todas as notícias da sua conta, deve-se acessar a roda ```/dashboard```. Caso não tenha permissão para publicar notícias, um array vazio será retornado.
   * ```/logout``` Para o usuário conseguir realizar o processo de logout da aplicação. Após esse processo, seu Token de autenticação será invalidado e precisará realizar novamente o login.
   * Para conseguir deletar um usuário, iremos acessar a rota ```/delete``` e enviar o e-mail do corpo de uma requisição do tipo **POST**. Um e-mail será enviado com um link contendo o token para autorizar a deleção do usuário.
 
 Podemos acessar as rotas referentes à notícias:
+ * ```/news``` 
