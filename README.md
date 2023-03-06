@@ -37,10 +37,10 @@ As rotas disponíveis após o processo de login são:
 
 Podemos acessar as rotas referentes à notícias:
 Existe apenas uma rota de notícia (```/news```) para todos os verbos HTTP.
- * Requisições do tipo **GET**:
+ ### Requisições do tipo **GET**:
   * Podemos listar todas as notícias do sistema apenas usando uma requisição tipo GET.
   * Caso seja necessário retornar uma notícia específica, pode-se passar o nome da notícia no parâmetro da rota.
- * Requisições do tipo **POST**:
+ ### Requisições do tipo **POST**:
   * Para cadastrar uma nova notícia, deve-se passar apenas o conteúdo a notícia no corpo da requisição. Nota-se que apenas usuários com a permissão de ```creator``` e ```admin``` tem autorização para realizar essa ação.
- * Requisições do tipo **UPDATE**:
+ ### Requisições do tipo **UPDATE**:
   * 
