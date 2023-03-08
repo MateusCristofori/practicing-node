@@ -1,38 +1,38 @@
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import jwt from "jsonwebtoken";
 import { db } from "../database/prisma";
+import { IUserRepository } from "../database/repositories/interfaces/IUserRepository";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import UserLoginDTO from "../dtos/UserLoginDTO";
 import CheckValidateToken from "../helpers/checkValidateToken/CheckValidateToken";
+import { generateAccessToken } from "../helpers/generateAccessToken/generateAcessToken";
 import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
 import ActionToken from "../helpers/passwordRecover/ActionToken";
 import Email from "../mail/Email";
 
 export default class UserController {
-  async registerNewUserHandler(req: Request, res: Response) {
-    const { content }: CreateUserDTO = req.body;
+  constructor(private readonly userRepository: IUserRepository) {}
 
-    if (!content) {
+  async registerNewUserHandler(req: Request, res: Response) {
+    const { user }: CreateUserDTO = req.body;
+
+    if (!user) {
       return res
         .status(404)
         .json({ error: "Precisa-se passar todas as credenciais." });
     }
 
-    if (!content.email.includes("@")) {
+    if (!user.email.includes("@")) {
       return res
         .status(400)
         .json({ error: "Deve-se passar o e-mail e senha!" });
     }
 
-    const newUser = await db.user.create({
-      data: {
-        name: content.name,
-        email: content.email,
-        password: await generatePasswordHash(content.password),
-      },
-    });
-
+    const newUser = await this.userRepository.create(
+      user.name,
+      user.email,
+      user.password
+    );
     return res.status(201).json({ newUser });
   }
 
@@ -49,11 +49,7 @@ export default class UserController {
       return res.status(400).json({ error: "O email precisa ser válido!" });
     }
 
-    const user = await db.user.findFirst({
-      where: {
-        email: content.email,
-      },
-    });
+    const user = await this.userRepository.findByEmail(content.email);
 
     if (!user) {
       return res.status(400).json({ error: "E-mail incorreto!" });
@@ -65,20 +61,7 @@ export default class UserController {
       return res.status(400).json({ error: "Senha incorreta!" });
     }
 
-    const token = jwt.sign(
-      {
-        user: {
-          id: user.id,
-          name: user.name,
-          email: user.email,
-        },
-      },
-      process.env.SECRET as string,
-      {
-        expiresIn: "1d",
-      }
-    );
-
+    const token = await generateAccessToken(user.id, user.name, user.email);
     const isValidToken = CheckValidateToken.isTokenValid(token);
 
     if (!isValidToken) {
@@ -106,19 +89,13 @@ export default class UserController {
       });
     }
 
-    const user = await db.user.findFirst({
-      where: {
-        email,
-      },
-    });
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
 
-    // abstração de criação de token de recuperação.
     const passwordObject = await ActionToken.createActionToken(user.id);
-
     const passwordTokenURL = `${process.env.URL_CHANGE_PASSWORD}/${passwordObject.token}`;
 
     new Email().sendEmail(
@@ -140,8 +117,6 @@ export default class UserController {
     }
 
     const token = req.params.token;
-
-    // Checagem de validação de token de recuperação de senha.
     const passwordToken = await ActionToken.findActionToken(token);
 
     if (!passwordToken.actionToken) {
@@ -154,16 +129,15 @@ export default class UserController {
       return res.status(400).json({ error: "Token de recuperação já usado." });
     }
 
-    const user = await db.user.update({
-      where: {
-        id: passwordToken.actionToken.userId,
-      },
-      data: {
-        password: await generatePasswordHash(newPassword),
-      },
-    });
-
-    // Abstração de invalidação de token usado.
+    // const user = await db.user.update({
+    //   where: {
+    //     id: passwordToken.actionToken.userId,
+    //   },
+    //   data: {
+    //     password: await generatePasswordHash(newPassword),
+    //   },
+    // });
+    // const user = await this.userRepository.update(passwordToken.actionToken.userId, )
     ActionToken.invalidateActionToken(passwordToken.actionToken.id);
 
     return res.status(200).json({ user });

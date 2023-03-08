@@ -1,26 +1,26 @@
 import { Response } from "express";
-import { db } from "../database/prisma";
+import { IBlackListTokenRepository } from "../database/repositories/interfaces/IBlackListTokenRepository";
+import { INewsRepository } from "../database/repositories/interfaces/INewsRepository";
+import { IUserRepository } from "../database/repositories/interfaces/IUserRepository";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import ActionToken from "../helpers/passwordRecover/ActionToken";
 import { RequestWithToken } from "../interfaces/RequestWithToken";
 import Email from "../mail/Email";
 
 export default class AuthUserController {
+  constructor(
+    private readonly userRepository: IUserRepository,
+    private readonly newsRepository: INewsRepository,
+    private readonly blackListRepository: IBlackListTokenRepository
+  ) {}
+
   async dashboard(req: RequestWithToken, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
 
     const user_id = req.token.user.id;
-
-    const userNews = await db.news.findMany({
-      where: {
-        userId: user_id,
-      },
-      include: {
-        post: true,
-      },
-    });
+    const userNews = await this.newsRepository.findAll(user_id);
 
     if (!userNews) {
       return res
@@ -37,20 +37,13 @@ export default class AuthUserController {
     }
 
     const user_id = req.token.user.id;
-
-    const { content }: CreateUserDTO = req.body;
-
-    const updatedUser = await db.user.update({
-      where: {
-        id: user_id,
-      },
-      data: {
-        name: content.name,
-        email: content.email,
-        password: content.password,
-      },
-    });
-
+    const { user }: CreateUserDTO = req.body;
+    const updatedUser = await this.userRepository.update(
+      user_id,
+      user.name,
+      user.email,
+      user.password
+    );
     return res.status(204).json({ updatedUser });
   }
 
@@ -60,12 +53,7 @@ export default class AuthUserController {
     }
 
     const { email } = req.body;
-
-    const user = await db.user.findFirst({
-      where: {
-        email,
-      },
-    });
+    const user = await this.userRepository.findByEmail(email);
 
     if (!user) {
       return res.status(404).json({ error: "Usuário não encontrado" });
@@ -102,12 +90,7 @@ export default class AuthUserController {
       return res.status(400).json({ error: "Token já utilizado." });
     }
 
-    await db.user.delete({
-      where: {
-        id: req.token.user.id,
-      },
-    });
-
+    await this.userRepository.deleteById(req.token.user.id);
     await ActionToken.invalidateActionToken(token);
 
     return res.status(200).json({ msg: "Usuário deletado." });
@@ -126,12 +109,10 @@ export default class AuthUserController {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
 
-    const invalidToken = await db.blackListToken.create({
-      data: {
-        token,
-        userId: req.token.user.id,
-      },
-    });
+    const invalidToken = await this.blackListRepository.create(
+      token,
+      req.token.user.id
+    );
 
     res.status(200).json({ msg: "Deslogado.", invalidToken });
   }
