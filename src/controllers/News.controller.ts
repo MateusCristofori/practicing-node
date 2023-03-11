@@ -1,9 +1,8 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { INewsRepository } from "../database/repositories/interfaces/INewsRepository";
 import { IPostRepository } from "../database/repositories/interfaces/IPostRepository";
 import { IUserRepository } from "../database/repositories/interfaces/IUserRepository";
 import { CreateNewsDTO } from "../dtos/CreateNewsDTO";
-import { RequestWithToken } from "../interfaces/RequestWithToken";
 
 export default class NewsController {
   constructor(
@@ -12,7 +11,7 @@ export default class NewsController {
     private readonly newsRepository: INewsRepository
   ) {}
 
-  async listNews(req: RequestWithToken, res: Response) {
+  async listNews(req: Request, res: Response) {
     if (!req.token) {
       return res
         .status(403)
@@ -29,30 +28,22 @@ export default class NewsController {
     res.status(200).json({ news });
   }
 
-  // async retrieveNews(req: RequestWithToken, res: Response) {
-  //   if (!req.token) {
-  //     return res.status(403).json({ error: "Token de autorização inválido. " });
-  //   }
+  async retrieveNews(req: Request, res: Response) {
+    if (!req.token) {
+      return res.status(403).json({ error: "Token de autorização inválido. " });
+    }
 
-  //   const { name } = req.params;
+    const { id } = req.params;
+    const news = await this.newsRepository.findById(id);
 
-  //   const news = await db.news.findFirst({
-  //     where: {
+    if (!news) {
+      return res.status(404).json({ error: "Notícia não encontrada." });
+    }
 
-  //     },
-  //     include: {
-  //       post: true,
-  //     },
-  //   });
+    return res.status(200).json({ news });
+  }
 
-  //   if (!news) {
-  //     return res.status(404).json({ error: "Notícia não encontrada." });
-  //   }
-
-  //   return res.status(200).json({ news });
-  // }
-
-  async createNews(req: RequestWithToken, res: Response) {
+  async createNews(req: Request, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -63,7 +54,7 @@ export default class NewsController {
     return res.status(200).send({ newNews });
   }
 
-  async updateNews(req: RequestWithToken, res: Response) {
+  async updateNews(req: Request, res: Response) {
     if (!req.token) {
       return res
         .status(403)
@@ -95,7 +86,7 @@ export default class NewsController {
     return res.status(204).json({ newPost });
   }
 
-  async deleteNews(req: RequestWithToken, res: Response) {
+  async deleteNews(req: Request, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido. " });
     }

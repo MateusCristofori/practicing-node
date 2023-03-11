@@ -2,7 +2,7 @@ import { News, Post } from "@prisma/client";
 import { db } from "../prisma";
 import { INewsRepository } from "./interfaces/INewsRepository";
 
-export default class NewsRepository implements INewsRepository {
+export class NewsRepository implements INewsRepository {
   async deleteById(id: string): Promise<News | null> {
     return await db.news.delete({
       where: {

@@ -1,10 +1,9 @@
-import { Response } from "express";
+import { Request, Response } from "express";
 import { IBlackListTokenRepository } from "../database/repositories/interfaces/IBlackListTokenRepository";
 import { INewsRepository } from "../database/repositories/interfaces/INewsRepository";
 import { IUserRepository } from "../database/repositories/interfaces/IUserRepository";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import ActionToken from "../helpers/passwordRecover/ActionToken";
-import { RequestWithToken } from "../interfaces/RequestWithToken";
 import Email from "../mail/Email";
 
 export default class AuthUserController {
@@ -14,7 +13,7 @@ export default class AuthUserController {
     private readonly blackListRepository: IBlackListTokenRepository
   ) {}
 
-  async dashboard(req: RequestWithToken, res: Response) {
+  async dashboard(req: Request, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -31,7 +30,7 @@ export default class AuthUserController {
     return res.status(200).json({ userNews });
   }
 
-  async updateUser(req: RequestWithToken, res: Response) {
+  async updateUser(req: Request, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -47,7 +46,7 @@ export default class AuthUserController {
     return res.status(204).json({ updatedUser });
   }
 
-  async deleteUserByEmail(req: RequestWithToken, res: Response) {
+  async deleteUserByEmail(req: Request, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -71,7 +70,7 @@ export default class AuthUserController {
     return res.status(200).send();
   }
 
-  async deletedUser(req: RequestWithToken, res: Response) {
+  async deletedUser(req: Request, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
@@ -97,7 +96,7 @@ export default class AuthUserController {
   }
 
   // Resolver bug de invalidação de token. Aparentemente o método está capturando apenas metade do token usado.
-  async userLogout(req: RequestWithToken, res: Response) {
+  async userLogout(req: Request, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
