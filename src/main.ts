@@ -2,9 +2,9 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import "express-async-errors";
-import authUserRoutes from "./routes/AuthUserRoutes";
-import newsRoutes from "./routes/NewsRoutes";
-import publicRouter from "./routes/publicRoutes";
+import authUserRoutes from "./routes/AuthUser.routes";
+import newsRoutes from "./routes/News.routes";
+import publicRouter from "./routes/public.routes";
 //express
 const app = express();
 //json

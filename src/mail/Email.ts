@@ -7,7 +7,7 @@ class Email {
       service: "gmail",
       auth: {
         user: process.env.USER_EMAIL,
-        pass: process.env.APP_PASSWORD_EMAIL,
+        pass: process.env.APP_EMAIL_PASSWORD,
       },
     });
     return transporter;
@@ -39,3 +39,4 @@ class Email {
 }
 
 export default Email;
+  
