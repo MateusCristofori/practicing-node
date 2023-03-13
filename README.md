@@ -30,5 +30,10 @@ Observações:
 * Caso seja necessário, o usuário poderá acessar a rota ```http://localhost:8000/recover``` para realizar a recuperação de senha. Um token será gerado para tornar válido o processo de recuperação. A URL será enviada para o e-mail do usuário juntamente com o token. Após o processo ser finalizado, esse Token será invalidado e precisará realizar novamente todo o processo de recuperação. O usuário deverá passar o email para o token ser gerado.
 
 ## Rotas privadas
-* As rotas para usuário logados no sistema são:
-** .
+* As rotas para usuários logados no sistema são:
+1. O usuário poderá acessar a rota ```/dashboard``` para ter acesso a todas as suas notícias cadastradas, caso tenha permissão para isso;
+2. O usuário poderá acessar a rota ```/update``` para conseguir realizar a atualização das suas informações;
+3. O usuário poderá acessar a rota ```/logout``` para conseguir realizar o processo de logout da aplicação. Nota-se que após esse processo, o token de autenticação será invalidado e o login deverá ser refeito.
+4. O usuário poderá acessar a rota ```/delete``` para conseguir realizar a deleção do seu perfil. O usuário deverá enviar seu email no corpo da requisição. Após isso, o sistema enviará um email para o usuário contendo um botão que irá redirecioná-lo para a URL correta onde o processo será finalizado.
+* As rotas para notícias são:
+1. 
