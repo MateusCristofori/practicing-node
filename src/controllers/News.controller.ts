@@ -1,3 +1,4 @@
+import { News, Post, User } from "@prisma/client";
 import { Request, Response } from "express";
 import { INewsRepository } from "../database/repositories/interfaces/INewsRepository";
 import { IPostRepository } from "../database/repositories/interfaces/IPostRepository";
@@ -6,9 +7,9 @@ import { CreateNewsDTO } from "../dtos/CreateNewsDTO";
 
 export default class NewsController {
   constructor(
-    private readonly postRepository: IPostRepository,
-    private readonly userRepository: IUserRepository,
-    private readonly newsRepository: INewsRepository
+    private readonly postRepository: IPostRepository<Post>,
+    private readonly userRepository: IUserRepository<User>,
+    private readonly newsRepository: INewsRepository<News>
   ) {}
 
   async listNews(req: Request, res: Response) {

@@ -1,24 +1,30 @@
 import { User } from "@prisma/client";
 import { db } from "../prisma";
 import { IUserRepository } from "./interfaces/IUserRepository";
+import { injectable } from "tsyringe";
 
-export default class UserRepository implements IUserRepository {
-  async findByEmail(email: string): Promise<User | null> {
-    return db.user.findFirst({
+@injectable()
+export default class UserRepository implements IUserRepository<User> {
+  async findById(id: string): Promise<User | null> {
+    return await db.user.findFirst({
       where: {
-        email,
+        id,
       },
     });
   }
 
   async findAll(): Promise<User[]> {
-    return await db.user.findMany({});
+    return await db.user.findMany({
+      orderBy: {
+        id: "asc",
+      },
+    });
   }
 
-  async findById(id: string): Promise<User | null> {
-    return await db.user.findFirst({
+  async findByEmail(email: string): Promise<User | null> {
+    return db.user.findFirst({
       where: {
-        id,
+        email,
       },
     });
   }
@@ -35,18 +41,20 @@ export default class UserRepository implements IUserRepository {
 
   async update(
     id: string,
-    name?: string,
-    email?: string,
-    password?: string
+    data: {
+      name?: string;
+      email?: string;
+      password?: string;
+    }
   ): Promise<User | null> {
     return await db.user.update({
       where: {
         id,
       },
       data: {
-        name: name,
-        email: email,
-        password: password,
+        name: data.name,
+        email: data.email,
+        password: data.password,
       },
     });
   }

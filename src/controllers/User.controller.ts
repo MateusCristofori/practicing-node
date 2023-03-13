@@ -1,3 +1,4 @@
+import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
 import { IUserRepository } from "../database/repositories/interfaces/IUserRepository";
@@ -5,11 +6,12 @@ import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import UserLoginDTO from "../dtos/UserLoginDTO";
 import CheckValidateToken from "../helpers/checkValidateToken/CheckValidateToken";
 import { generateAccessToken } from "../helpers/generateAccessToken/generateAcessToken";
+import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
 import ActionToken from "../helpers/passwordRecover/ActionToken";
 import Email from "../mail/Email";
 
 export default class UserController {
-  constructor(private readonly userRepository: IUserRepository) {}
+  constructor(private readonly userRepository: IUserRepository<User>) {}
 
   async registerNewUserHandler(req: Request, res: Response) {
     const { user }: CreateUserDTO = req.body;
@@ -127,17 +129,13 @@ export default class UserController {
       return res.status(400).json({ error: "Token de recuperação já usado." });
     }
 
-    // const user = await db.user.update({
-    //   where: {
-    //     id: passwordToken.actionToken.userId,
-    //   },
-    //   data: {
-    //     password: await generatePasswordHash(newPassword),
-    //   },
-    // });
-    // const user = await this.userRepository.update(passwordToken.actionToken.userId, )
+    const user = await this.userRepository.update(
+      passwordToken.actionToken.userId,
+      {
+        password: await generatePasswordHash(newPassword),
+      }
+    );
     ActionToken.invalidateActionToken(passwordToken.actionToken.id);
-
     return res.status(200).json({ user });
   }
 }

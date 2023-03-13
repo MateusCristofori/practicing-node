@@ -1,8 +1,10 @@
 import { Post } from "@prisma/client";
 import { db } from "../prisma";
 import { IPostRepository } from "./interfaces/IPostRepository";
+import { injectable } from "tsyringe";
 
-export class PostRepository implements IPostRepository {
+@injectable()
+export class PostRepository implements IPostRepository<Post> {
   async update(id: string, content: string): Promise<Post> {
     return await db.post.update({
       where: {

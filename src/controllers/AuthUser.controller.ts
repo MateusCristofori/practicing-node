@@ -1,3 +1,4 @@
+import { BlackListToken, News, User } from "@prisma/client";
 import { Request, Response } from "express";
 import { IBlackListTokenRepository } from "../database/repositories/interfaces/IBlackListTokenRepository";
 import { INewsRepository } from "../database/repositories/interfaces/INewsRepository";
@@ -8,9 +9,9 @@ import Email from "../mail/Email";
 
 export default class AuthUserController {
   constructor(
-    private readonly userRepository: IUserRepository,
-    private readonly newsRepository: INewsRepository,
-    private readonly blackListRepository: IBlackListTokenRepository
+    private readonly userRepository: IUserRepository<User>,
+    private readonly newsRepository: INewsRepository<News>,
+    private readonly blackListRepository: IBlackListTokenRepository<BlackListToken>
   ) {}
 
   async dashboard(req: Request, res: Response) {
@@ -37,12 +38,11 @@ export default class AuthUserController {
 
     const user_id = req.token.user.id;
     const { user }: CreateUserDTO = req.body;
-    const updatedUser = await this.userRepository.update(
-      user_id,
-      user.name,
-      user.email,
-      user.password
-    );
+    const updatedUser = await this.userRepository.update(user_id, {
+      name: user.name,
+      email: user.email,
+      password: user.password,
+    });
     return res.status(204).json({ updatedUser });
   }
 
