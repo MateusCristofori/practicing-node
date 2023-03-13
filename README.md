@@ -26,7 +26,7 @@ Observações:
 ### Login de usuários e recuperação de senha
 * Para o processo de login, acesse a rota ```/login``` passando o ```"email"``` e ```"password"``` cadastrados anteriormente.
 * Após o processo de login, o usuário terá acesso as rotas privadas da aplicação.
-* Caso seja necessário, o usuário poderá acessar a rota ```/recover``` para realizar a recuperação de senha. Um token será gerado para tornar válido o processo de recuperação. A URL será enviada para o e-mail do usuário juntamente com o token. Após o processo ser finalizado, esse Token será invalidado e precisará realizar novamente todo o processo de recuperação. O usuário deverá passar o email para o token ser gerado.
+* Caso seja necessário, o usuário poderá acessar a rota ```/recover``` para realizar a recuperação de senha. Um token será gerado para tornar válido o processo de recuperação. A URL será enviada para o e-mail do usuário, juntamente com o token, através de um botão. Após o processo ser finalizado, esse Token será invalidado e precisará realizar novamente todo o processo de recuperação. O usuário deverá passar o email para o token ser gerado.
 
 ## Rotas privadas
 #### As rotas para usuários logados no sistema são:
