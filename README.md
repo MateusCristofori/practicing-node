@@ -36,4 +36,4 @@ Observações:
 * O usuário poderá acessar a rota ```/logout``` para conseguir realizar o processo de logout da aplicação. Nota-se que após esse processo, o token de autenticação será invalidado e o login deverá ser refeito.
 * O usuário poderá acessar a rota ```/delete``` para conseguir realizar a deleção do seu perfil. O usuário deverá enviar seu email no corpo da requisição. Após isso, o sistema enviará um email para o usuário contendo um botão que irá redirecioná-lo para a URL correta onde o processo será finalizado.
 #### As rotas para notícias são:
-*  
+* Todas as rotas de notícias se baseiam na URL ```/nows``` onde iremos ter um verbo HTTP para cada ação. Podemos listar todas as notícias, criar novas (essa rota específica irá ser validada por um middleware de checagem de permissão de usuário), atualizar e deletar notícias.
