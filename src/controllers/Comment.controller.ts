@@ -1,8 +1,8 @@
 import { Request, Response } from "express";
 import { Comment, Post, User } from "@prisma/client";
-import { ICommentRepository } from "../database/repositories/interfaces/ICommentRepository";
-import { IPostRepository } from "../database/repositories/interfaces/IPostRepository";
-import { IUserRepository } from "../database/repositories/interfaces/IUserRepository";
+import { ICommentRepository } from "../infra/repositories/interfaces/ICommentRepository";
+import { IPostRepository } from "../infra/repositories/interfaces/IPostRepository";
+import { IUserRepository } from "../infra/repositories/interfaces/IUserRepository";
 
 export default class CommentController {
   constructor(

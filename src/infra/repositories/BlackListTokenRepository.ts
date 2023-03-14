@@ -1,5 +1,5 @@
 import { BlackListToken } from "@prisma/client";
-import { db } from "../prisma";
+import { db } from "../../database/prisma";
 import { IBlackListTokenRepository } from "./interfaces/IBlackListTokenRepository";
 
 export class BlackListTokenRepository

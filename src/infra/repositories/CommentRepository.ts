@@ -1,5 +1,5 @@
 import { Comment, Post } from "@prisma/client";
-import { db } from "../prisma";
+import { db } from "../../database/prisma";
 import { ICommentRepository } from "./interfaces/ICommentRepository";
 
 export default class CommentRepository implements ICommentRepository<Comment> {

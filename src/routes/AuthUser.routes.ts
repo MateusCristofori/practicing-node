@@ -16,7 +16,7 @@ authUserRoutes
 
 authUserRoutes
 
-  .route("/users/:token?")
+  .route("/update/:token?")
 
   .put(authUserController.updateUser);
 

@@ -1,7 +1,7 @@
 import { Roles } from "@prisma/client";
 import { NextFunction, Response } from "express";
 import { db } from "../database/prisma";
-import { RequestWithToken } from "../interfaces/RequestWithToken";
+import { RequestWithToken } from "../infra/repositories/interfaces/RequestWithToken";
 
 export const checkRoleIsAllowed = async (
   req: RequestWithToken,

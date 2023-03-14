@@ -1,8 +1,8 @@
 import { BlackListToken, News, User } from "@prisma/client";
 import { Request, Response } from "express";
-import { IBlackListTokenRepository } from "../database/repositories/interfaces/IBlackListTokenRepository";
-import { INewsRepository } from "../database/repositories/interfaces/INewsRepository";
-import { IUserRepository } from "../database/repositories/interfaces/IUserRepository";
+import { IBlackListTokenRepository } from "../infra/repositories/interfaces/IBlackListTokenRepository";
+import { INewsRepository } from "../infra/repositories/interfaces/INewsRepository";
+import { IUserRepository } from "../infra/repositories/interfaces/IUserRepository";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import ActionToken from "../helpers/passwordRecover/ActionToken";
 import Email from "../mail/Email";

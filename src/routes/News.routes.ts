@@ -10,11 +10,11 @@ newsRoutes.use(tokenValidation);
 const newsController = new NewsController();
 
 newsRoutes
-  .route("/news/:nome?")
+  .route("/news/:name?")
 
   .get(newsController.listNews)
 
-  //.get(newsController.retrieveNews)
+  .get(newsController.retrieveNews)
 
   .post(checkRoleIsAllowed, newsController.createNews)
 

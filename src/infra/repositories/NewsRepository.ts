@@ -1,5 +1,5 @@
 import { News, Post } from "@prisma/client";
-import { db } from "../prisma";
+import { db } from "../../database/prisma";
 import { INewsRepository } from "./interfaces/INewsRepository";
 
 export class NewsRepository implements INewsRepository<News> {

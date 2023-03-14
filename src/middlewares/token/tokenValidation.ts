@@ -1,8 +1,8 @@
 import { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
 import { db } from "../../database/prisma";
-import { JwtPayloadUserInfo } from "../../interfaces/JwtPayloadUserInfo";
-import { RequestWithToken } from "../../interfaces/RequestWithToken";
+import { JwtPayloadUserInfo } from "../../infra/token/JwtPayloadUserInfo";
+import { RequestWithToken } from "../../infra/repositories/interfaces/RequestWithToken";
 
 export const tokenValidation = async (
   req: RequestWithToken,

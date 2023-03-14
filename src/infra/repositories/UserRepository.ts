@@ -1,5 +1,5 @@
 import { User } from "@prisma/client";
-import { db } from "../prisma";
+import { db } from "../../database/prisma";
 import { IUserRepository } from "./interfaces/IUserRepository";
 import { injectable } from "tsyringe";
 

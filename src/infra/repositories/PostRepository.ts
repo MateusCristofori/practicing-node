@@ -1,5 +1,5 @@
 import { Post } from "@prisma/client";
-import { db } from "../prisma";
+import { db } from "../../database/prisma";
 import { IPostRepository } from "./interfaces/IPostRepository";
 import { injectable } from "tsyringe";
 

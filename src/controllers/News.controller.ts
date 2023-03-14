@@ -1,8 +1,8 @@
 import { News, Post, User } from "@prisma/client";
 import { Request, Response } from "express";
-import { INewsRepository } from "../database/repositories/interfaces/INewsRepository";
-import { IPostRepository } from "../database/repositories/interfaces/IPostRepository";
-import { IUserRepository } from "../database/repositories/interfaces/IUserRepository";
+import { INewsRepository } from "../infra/repositories/interfaces/INewsRepository";
+import { IPostRepository } from "../infra/repositories/interfaces/IPostRepository";
+import { IUserRepository } from "../infra/repositories/interfaces/IUserRepository";
 import { CreateNewsDTO } from "../dtos/CreateNewsDTO";
 
 export default class NewsController {

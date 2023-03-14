@@ -1,7 +1,7 @@
 import { User } from "@prisma/client";
 import bcrypt from "bcrypt";
 import { Request, Response } from "express";
-import { IUserRepository } from "../database/repositories/interfaces/IUserRepository";
+import { IUserRepository } from "../infra/repositories/interfaces/IUserRepository";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import UserLoginDTO from "../dtos/UserLoginDTO";
 import CheckValidateToken from "../helpers/checkValidateToken/CheckValidateToken";
