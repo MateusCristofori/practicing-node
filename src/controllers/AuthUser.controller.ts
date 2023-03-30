@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { db } from "../database/prisma";
-import { CreateUserDTO } from "../dtos/CreateUserDTO";
+import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
 import ActionToken from "../helpers/passwordRecover/ActionToken";
 import Email from "../mail/Email";
 import { RequestWithToken } from "../middlewares/token/RequestWithToken";
@@ -27,7 +27,7 @@ export default class AuthUserController {
     if (!req.token) {
       return res.status(403).json({ error: "Invalid Token." });
     }
-    const { user }: CreateUserDTO = req.body;
+    const { user }: UpdateUserDTO = req.body;
     const updatedUser = await db.user.update({
       where: {
         id: req.token.user.id,
