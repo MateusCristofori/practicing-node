@@ -1,110 +1,118 @@
-import { Request, Response } from "express";
-import { Comment, Post, User } from "@prisma/client";
-import { ICommentRepository } from "../infra/repositories/interfaces/ICommentRepository";
-import { IPostRepository } from "../infra/repositories/interfaces/IPostRepository";
-import { IUserRepository } from "../infra/repositories/interfaces/IUserRepository";
+import { Response } from "express";
+import { db } from "../database/prisma";
+import { RequestWithToken } from "../middlewares/token/RequestWithToken";
 
 export default class CommentController {
-  constructor(
-    private readonly commentRepository: ICommentRepository<Comment>,
-    private readonly postRepository: IPostRepository<Post>,
-    private readonly userRepository: IUserRepository<User>
-  ) {}
-
-  async listComments(req: Request, res: Response) {
-    const comments = await this.commentRepository.findAll();
-
+  async listComments(req: RequestWithToken, res: Response) {
+    const comments = await db.comment.findMany();
     if (comments.length == 0) {
       return res
         .status(404)
         .json({ error: "Nenhum comentário foi encontrado." });
     }
-
     return res.status(200).json(comments);
   }
 
-  async create(req: Request, res: Response) {
+  async create(req: RequestWithToken, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
-
     const { content } = req.body;
-
     if (!content) {
       return res.status(404).json({ error: "Erro ao criar um comentário." });
     }
-
-    const post = await this.postRepository.create(content, req.token.user.id);
-    const comment = await this.commentRepository.create(
-      post.id,
-      req.token.user.id
-    );
-
+    const post = await db.post.create({
+      data: {
+        author_id: req.token.user.id,
+        content,
+      },
+    });
+    const comment = await db.comment.create({
+      data: {
+        postId: post.id,
+        userId: req.token.user.id,
+      },
+    });
     return res.status(201).json(comment);
   }
 
-  async update(req: Request, res: Response) {
+  async update(req: RequestWithToken, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
-
     const author_id = req.token.user.id;
-    const author = await this.userRepository.findById(author_id);
-
+    const author = await db.user.findFirst({
+      where: {
+        id: author_id,
+      },
+    });
     if (!author) {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
-
     const { id } = req.params;
-    const comment = await this.commentRepository.findById(id);
-
+    const comment = await db.comment.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        post: true,
+      },
+    });
     if (!comment) {
       return res.status(404).json({ error: "Comentário não encontrado." });
     }
-
     if (comment.post.author_id !== author.id) {
       return res.status(403).json({
         error: "Apenas o usuário que criou o comentário poderá atualizá-lo.",
       });
     }
-
     const { content } = req.body;
-
-    const updatedComment = await this.postRepository.update(
-      comment.id,
-      content
-    );
-
+    const updatedComment = await db.post.update({
+      where: {
+        id: comment.id,
+      },
+      data: {
+        content,
+      },
+    });
     return res.status(204).json({ updatedComment });
   }
 
-  async delete(req: Request, res: Response) {
+  async delete(req: RequestWithToken, res: Response) {
     if (!req.token) {
       return res.status(403).json({ error: "Token de autorização inválido." });
     }
-
     const author_id = req.token.user.id;
     const { id } = req.params;
-
-    const author = await this.userRepository.findById(author_id);
-
+    const author = await db.user.findFirst({
+      where: {
+        id: author_id,
+      },
+    });
     if (!author) {
       return res.status(404).json({ error: "Usuário não encontrado." });
     }
-
-    const comment = await this.commentRepository.findById(id);
-
+    const comment = await db.comment.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        post: true,
+      },
+    });
     if (!comment) {
       return res.status(404).json({ error: "Comentário não encontrado" });
     }
-
     if (comment.post.author_id !== author.id) {
       return res.status(403).json({
         error: "Apenas o usuário que criou o comentário pode deletá-lo.",
       });
     }
-
-    const deletedComment = await this.commentRepository.delete(id);
+    const deletedComment = await db.comment.delete({
+      where: {
+        id,
+      },
+    });
     return res.status(200).json(deletedComment);
   }
 }

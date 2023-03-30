@@ -6,4 +6,4 @@ const commentRouter = Router();
 commentRouter.use(tokenValidation);
 //-------- //
 
-const commentController = new CommentController();
+//const commentController = new CommentController();

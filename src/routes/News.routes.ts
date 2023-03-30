@@ -7,19 +7,19 @@ const newsRoutes = Router();
 newsRoutes.use(tokenValidation);
 
 // ---------- //
-const newsController = new NewsController();
+// const newsController = new NewsController();
 
-newsRoutes
-  .route("/news/:name?")
+// newsRoutes
+//   .route("/news/:name?")
 
-  .get(newsController.listNews)
+//   .get(newsController.listNews)
 
-  .get(newsController.retrieveNews)
+//   .get(newsController.retrieveNews)
 
-  .post(checkRoleIsAllowed, newsController.createNews)
+//   .post(checkRoleIsAllowed, newsController.createNews)
 
-  .put(newsController.updateNews)
+//   .put(newsController.updateNews)
 
-  .delete(newsController.deleteNews);
+//   .delete(newsController.deleteNews);
 
 export default newsRoutes;
