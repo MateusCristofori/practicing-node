@@ -1,7 +1,7 @@
 import { Response } from "express";
 import { db } from "../database/prisma";
 import { CreateNewsDTO } from "../dtos/CreateNewsDTO";
-import { RequestWithToken } from "../middlewares/token/RequestWithToken";
+import { RequestWithToken } from "../infra/token/RequestWithToken";
 
 export default class NewsController {
   async listNews(req: RequestWithToken, res: Response) {

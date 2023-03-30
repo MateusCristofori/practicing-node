@@ -9,7 +9,7 @@ import { generateAccessToken } from "../helpers/generateAccessToken/generateAcce
 import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
 import ActionToken from "../helpers/passwordRecover/ActionToken";
 import Email from "../mail/Email";
-import { RequestWithToken } from "../middlewares/token/RequestWithToken";
+import { RequestWithToken } from "../infra/token/RequestWithToken";
 
 export class UserController {
   async registerNewUserHandler(req: RequestWithToken, res: Response) {

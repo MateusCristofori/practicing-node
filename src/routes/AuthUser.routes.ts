@@ -1,20 +1,13 @@
 import Router from "express";
 import AuthUserController from "../controllers/AuthUser.controller";
-import { blackListTokenInstance } from "../infra/repositories/BlackListTokenRepository";
-import { newsRepositoryInstance } from "../infra/repositories/NewsRepository";
-import { userRepositoryInstance } from "../infra/repositories/UserRepository";
-import { tokenValidation } from "../middlewares/token/tokenValidation";
+import { tokenValidation } from "../middlewares/tokenValidation";
 
 const authUserRoutes = Router();
 authUserRoutes.use(tokenValidation);
 
 // -------- //
 
-const authUserController = new AuthUserController(
-  userRepositoryInstance,
-  newsRepositoryInstance,
-  blackListTokenInstance
-);
+const authUserController = new AuthUserController();
 
 authUserRoutes
 

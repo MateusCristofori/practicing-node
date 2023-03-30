@@ -3,7 +3,7 @@ import { db } from "../database/prisma";
 import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
 import ActionToken from "../helpers/passwordRecover/ActionToken";
 import Email from "../mail/Email";
-import { RequestWithToken } from "../middlewares/token/RequestWithToken";
+import { RequestWithToken } from "../infra/token/RequestWithToken";
 
 export default class AuthUserController {
   async dashboard(req: RequestWithToken, res: Response) {
