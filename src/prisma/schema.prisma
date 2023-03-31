@@ -1,0 +1,79 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model BlackListToken {
+  id     String  @id
+  token  String
+  userId String?
+}
+
+model Comment {
+  id     String  @id
+  userId String
+  postId String  @unique(map: "Comment_postId_key")
+  newsId String?
+  news   News?   @relation(fields: [newsId], references: [id], map: "Comment_newsId_fkey")
+  post   Post    @relation(fields: [postId], references: [id], onDelete: Cascade, map: "Comment_postId_fkey")
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "Comment_userId_fkey")
+
+  @@index([newsId], map: "Comment_newsId_fkey")
+  @@index([userId], map: "Comment_userId_fkey")
+}
+
+model News {
+  id      String    @id
+  postId  String    @unique(map: "News_postId_key")
+  userId  String?
+  comment Comment[]
+  post    Post      @relation(fields: [postId], references: [id], onDelete: Cascade, map: "News_postId_fkey")
+  user    User?     @relation(fields: [userId], references: [id], map: "News_userId_fkey")
+
+  @@index([userId], map: "News_userId_fkey")
+}
+
+model Post {
+  id         String   @id
+  content    String
+  author_id  String
+  created_at DateTime @default(now())
+  comment    Comment?
+  news       News?
+  user       User     @relation(fields: [author_id], references: [id], map: "Post_author_id_fkey")
+
+  @@index([author_id], map: "Post_author_id_fkey")
+}
+
+model recovertoken {
+  id     String  @id
+  token  String
+  userId String
+  used   Boolean
+  user   User    @relation(fields: [userId], references: [id], onDelete: Cascade, map: "RecoverToken_userId_fkey")
+
+  @@index([userId], map: "RecoverToken_userId_fkey")
+}
+
+model User {
+  id           String         @id
+  name         String         @unique(map: "User_name_key")
+  email        String         @unique(map: "User_email_key")
+  password     String
+  role         USER_ROLE      @default(READER)
+  created_at   DateTime       @default(now())
+  comment      Comment[]
+  news         News[]
+  post         Post[]
+  recovertoken recovertoken[]
+}
+
+enum USER_ROLE {
+  ADMIN
+  CREATOR
+  READER
+}
