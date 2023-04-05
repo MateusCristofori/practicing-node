@@ -1,6 +1,6 @@
 import { Response } from "express";
 import { db } from "../database/prisma";
-import { RequestWithToken } from "../infra/token/RequestWithToken";
+import { RequestWithToken } from "../middlewares/token/RequestWithToken";
 
 export default class CommentController {
   async listComments(req: RequestWithToken, res: Response) {
