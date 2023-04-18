@@ -9,30 +9,16 @@ authUserRoutes.use(tokenValidation);
 
 const authUserController = new AuthUserController();
 
-authUserRoutes
+authUserRoutes.route("/dashboard").get(authUserController.dashboard);
 
-  .route("/dashboard")
-
-  .get(authUserController.dashboard);
-
-authUserRoutes
-
-  .route("/update/:token?")
-
-  .put(authUserController.updateUser);
+// TODO: token should be secret. maybe we should discuss changing these route params to /:id or /:username
+authUserRoutes.route("/update/:token").put(authUserController.updateUser);
 
 authUserRoutes
-
-  .route("/delete/:token?")
-
+  .route("/delete/:token")
   .post(authUserController.deleteUserByEmail)
-
   .delete(authUserController.deletedUser);
 
-authUserRoutes
-
-  .route("/logout")
-
-  .post(authUserController.userLogout);
+authUserRoutes.route("/logout").post(authUserController.userLogout);
 
 export default authUserRoutes;
