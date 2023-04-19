@@ -1,15 +1,15 @@
 import "reflect-metadata";
 import bcrypt from "bcrypt";
 import { Response } from "express";
-import { db } from "../database/prisma";
+import { db } from "../infra/database/prisma";
 import { CreateUserDTO } from "../dtos/CreateUserDTO";
 import UserLoginDTO from "../dtos/UserLoginDTO";
-import CheckValidateToken from "../helpers/checkValidateToken/CheckValidateToken";
-import { generateAccessToken } from "../helpers/generateAccessToken/generateAccessToken";
-import { generatePasswordHash } from "../helpers/generatePasswordHash/generatePasswordHash";
-import ActionToken from "../helpers/passwordRecover/ActionToken";
-import Email from "../mail/Email";
-import { RequestWithToken } from "../middlewares/token/RequestWithToken";
+import CheckValidateToken from "../infra/helpers/checkValidateToken/CheckValidateToken";
+import { generateAccessToken } from "../infra/helpers/generateAccessToken/generateAccessToken";
+import { generatePasswordHash } from "../infra/helpers/generatePasswordHash/generatePasswordHash";
+import ActionToken from "../infra/helpers/passwordRecover/ActionToken";
+import Email from "../infra/mail/Email";
+import { RequestWithToken } from "../infra/token/RequestWithToken";
 
 export class UserController {
   async registerNewUserHandler(req: RequestWithToken, res: Response) {

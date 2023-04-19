@@ -1,6 +1,6 @@
 import { NextFunction, Response } from "express";
 import jwt from "jsonwebtoken";
-import { db } from "../database/prisma";
+import { db } from "../infra/database/prisma";
 import { JwtPayloadUserInfo } from "../../infra/token/JwtPayloadUserInfo";
 import { RequestWithToken } from "../../infra/token/RequestWithToken";
 

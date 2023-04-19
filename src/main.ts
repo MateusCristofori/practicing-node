@@ -14,7 +14,7 @@ import { IUserRepository } from "./infra/repositories/interfaces/IUserRepository
 import { UserRepository } from "./infra/repositories/UserRepository";
 import { UserController } from "./controllers/User.controller";
 import { User } from "@prisma/client";
-import { db } from "./database/prisma";
+import { db } from "./infra/database/prisma";
 
 // class Server {
 //   constructor() {

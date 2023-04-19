@@ -1,9 +1,9 @@
 import { Response } from "express";
-import { db } from "../database/prisma";
+import { db } from "../infra/database/prisma";
 import { UpdateUserDTO } from "../dtos/UpdateUserDTO";
-import ActionToken from "../helpers/passwordRecover/ActionToken";
-import Email from "../mail/Email";
-import { RequestWithToken } from "../middlewares/token/RequestWithToken";
+import ActionToken from "../infra/helpers/passwordRecover/ActionToken";
+import Email from "../infra/mail/Email";
+import { RequestWithToken } from "../infra/token/RequestWithToken";
 
 export default class AuthUserController {
   async dashboard(req: RequestWithToken, res: Response) {
